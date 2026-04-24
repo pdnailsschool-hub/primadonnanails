@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Какъв тип маникюристка си? — PrimaDonna</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #E8A0B4;
+    --rose-dark: #C4788E;
+    --rose-light: #FBF0F4;
+    --cream: #FFE3E3;
+    --cream-light: #FFF8F8;
+    --purple: #9B6BB5;
+    --ink: #2D2D2D;
+    --muted: #888780;
+    --border: #F0E0E5;
+    --white: #FFFFFF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream-light); color: var(--ink); min-height: 100vh; }
+
+  header { text-align: center; padding: 48px 24px 36px; background: var(--white); border-bottom: 1px solid var(--border); }
+  .brand { font-family: 'Playfair Display', serif; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--rose-dark); margin-bottom: 16px; font-weight: 400; }
+  header h1 { font-family: 'Playfair Display', serif; font-size: clamp(26px, 5vw, 42px); font-weight: 600; color: var(--ink); line-height: 1.2; margin-bottom: 12px; }
+  header p { font-size: 15px; color: var(--muted); font-weight: 300; max-width: 480px; margin: 0 auto; line-height: 1.6; }
+
+  .progress-wrap { max-width: 560px; margin: 32px auto 0; padding: 0 24px; }
+  .progress-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--rose); border-radius: 2px; transition: width 0.5s ease; }
+  .progress-text { font-size: 12px; color: var(--muted); text-align: right; margin-top: 8px; }
+
+  .quiz-container { max-width: 560px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .question-block { display: none; animation: fadeIn 0.4s ease; }
+  .question-block.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .q-number { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--rose-dark); font-weight: 500; margin-bottom: 12px; }
+  .q-text { font-family: 'Playfair Display', serif; font-size: clamp(18px, 4vw, 24px); font-weight: 600; color: var(--ink); line-height: 1.4; margin-bottom: 28px; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option { padding: 16px 20px; background: var(--white); border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 300; color: var(--ink); line-height: 1.5; transition: all 0.2s ease; text-align: left; }
+  .option:hover { border-color: var(--rose); background: var(--rose-light); transform: translateX(4px); }
+  .option.selected { border-color: var(--rose); background: var(--rose-light); }
+  .option.selected::before { content: ''; display: inline-block; width: 8px; height: 8px; background: var(--rose-dark); border-radius: 50%; margin-right: 10px; vertical-align: middle; }
+
+  .nav-btn { margin-top: 28px; padding: 14px 36px; background: var(--rose); color: var(--white); border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; display: none; }
+  .nav-btn:hover { background: var(--rose-dark); transform: translateY(-1px); }
+  .nav-btn.visible { display: inline-block; }
+
+  /* RESULT */
+  .result-block { display: none; animation: fadeIn 0.5s ease; }
+  .result-block.active { display: block; }
+
+  .result-badge { display: inline-block; padding: 6px 16px; background: var(--cream); border-radius: 20px; font-size: 12px; font-weight: 500; color: var(--rose-dark); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+  .result-title { font-family: 'Playfair Display', serif; font-size: clamp(24px, 5vw, 36px); font-weight: 600; color: var(--ink); line-height: 1.2; margin-bottom: 6px; }
+  .result-subtitle { font-family: 'Playfair Display', serif; font-size: 16px; font-style: italic; color: var(--muted); margin-bottom: 28px; }
+  .result-divider { height: 2px; background: linear-gradient(to right, var(--rose), transparent); margin-bottom: 28px; border-radius: 1px; }
+  .result-analysis { font-size: 15px; line-height: 1.8; color: var(--ink); font-weight: 300; margin-bottom: 36px; background: var(--white); padding: 24px; border-radius: 12px; border: 1px solid var(--border); }
+
+  /* CTA SECTION */
+  .cta-section { background: var(--cream); border-radius: 14px; padding: 28px 24px; }
+  .cta-section-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--rose-dark); font-weight: 500; margin-bottom: 8px; }
+  .cta-section h3 { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--ink); margin-bottom: 8px; }
+  .cta-section p { font-size: 14px; color: var(--muted); font-weight: 300; line-height: 1.6; margin-bottom: 20px; }
+
+  .email-inline { display: flex; flex-direction: column; gap: 10px; }
+  .email-inline input { padding: 13px 16px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: var(--white); outline: none; transition: border-color 0.2s; }
+  .email-inline input:focus { border-color: var(--rose); }
+  .email-inline button { padding: 13px; background: var(--rose); color: var(--white); border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; }
+  .email-inline button:hover { background: var(--rose-dark); }
+  .email-note { font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+  .cta-link { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--white); border: 1.5px solid var(--border); border-radius: 10px; text-decoration: none; transition: all 0.2s ease; gap: 12px; }
+  .cta-link:hover { border-color: var(--rose); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,160,180,0.15); }
+  .cta-link-label { font-size: 11px; color: var(--rose-dark); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+  .cta-link-title { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--ink); font-weight: 600; }
+  .cta-arrow { width: 36px; height: 36px; background: var(--rose-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--rose-dark); font-size: 16px; flex-shrink: 0; }
+
+  .success-msg { display: none; text-align: center; padding: 16px; background: var(--white); border-radius: 10px; border: 1.5px solid var(--rose); margin-top: 12px; }
+  .success-msg p { font-size: 14px; color: var(--ink); margin-bottom: 12px; }
+  .success-link { display: inline-block; padding: 10px 24px; background: var(--rose); color: var(--white); border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 500; margin: 4px; transition: background 0.2s; }
+  .success-link:hover { background: var(--rose-dark); }
+
+  footer { text-align: center; padding: 24px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); background: var(--white); margin-top: 40px; }
+  footer span { color: var(--purple); font-family: 'Playfair Display', serif; font-style: italic; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">PrimaDonna Nails Salon & School</div>
+  <h1>Какъв тип маникюристка си?</h1>
+  <p>5 въпроса. Личен анализ. Безплатен наръчник съобразен с теб.</p>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-text" id="progressText">Въпрос 1 от 5</div>
+  </div>
+</header>
+
+<div class="quiz-container">
+
+  <div class="question-block active" id="q1">
+    <div class="q-number">Въпрос 1</div>
+    <div class="q-text">Кое изречение те описва най-точно в момента?</div>
+    <div class="options">
+      <div class="option" data-q="1" data-val="1a">Тепърва събирам клиенти — все още не е стабилно</div>
+      <div class="option" data-q="1" data-val="1b">Имам клиенти, но в края на месеца парите не стигат</div>
+      <div class="option" data-q="1" data-val="1c">Боли ме гърбът и ръцете — не мога така още години</div>
+      <div class="option" data-q="1" data-val="1d">Клиентите ме питат да ги науча, но не знам откъде да започна</div>
+      <div class="option" data-q="1" data-val="1e">Пробвах нещо безплатно и проработи — искам да знам какво следва</div>
+    </div>
+    <button class="nav-btn" id="btn1" onclick="goNext(2)">Напред →</button>
+  </div>
+
+  <div class="question-block" id="q2">
+    <div class="q-number">Въпрос 2</div>
+    <div class="q-text">Какво те спира най-много в момента?</div>
+    <div class="options">
+      <div class="option" data-q="2" data-val="2a">Не знам как да определя цените и губя от отстъпки</div>
+      <div class="option" data-q="2" data-val="2b">Зависимостта от тялото ми ме плаши</div>
+      <div class="option" data-q="2" data-val="2c">Знам как се прави, но не знам как се преподава</div>
+      <div class="option" data-q="2" data-val="2d">Изгорена съм от обещания без реален резултат</div>
+    </div>
+    <button class="nav-btn" id="btn2" onclick="goNext(3)">Напред →</button>
+  </div>
+
+  <div class="question-block" id="q3">
+    <div class="q-number">Въпрос 3</div>
+    <div class="q-text">Как работиш в момента?</div>
+    <div class="options">
+      <div class="option" data-q="3" data-val="3a">От вкъщи или под наем в салон</div>
+      <div class="option" data-q="3" data-val="3b">Имам собствен салон или работя на свободна практика</div>
+      <div class="option" data-q="3" data-val="3c">Имам салон и мисля за следващото ниво — преподаване или делегиране</div>
+    </div>
+    <button class="nav-btn" id="btn3" onclick="goNext(4)">Напред →</button>
+  </div>
+
+  <div class="question-block" id="q4">
+    <div class="q-number">Въпрос 4</div>
+    <div class="q-text">Какво би те накарало да действаш веднага?</div>
+    <div class="options">
+      <div class="option" data-q="4" data-val="4a">Конкретен инструмент — калкулатор, план, система</div>
+      <div class="option" data-q="4" data-val="4b">Някой да назове точно болката ми преди аз да я кажа</div>
+      <div class="option" data-q="4" data-val="4c">Методика за преподаване която мога да приложа веднага</div>
+      <div class="option" data-q="4" data-val="4d">Едно безплатно нещо което реално работи</div>
+    </div>
+    <button class="nav-btn" id="btn4" onclick="goNext(5)">Напред →</button>
+  </div>
+
+  <div class="question-block" id="q5">
+    <div class="q-number">Въпрос 5</div>
+    <div class="q-text">Какво искаш да постигнеш най-много?</div>
+    <div class="options">
+      <div class="option" data-q="5" data-val="5a">Да работя по-малко и да печеля повече</div>
+      <div class="option" data-q="5" data-val="5b">Да изградя бизнес, който не зависи само от тялото ми</div>
+      <div class="option" data-q="5" data-val="5c">Да преподавам и да предавам знанията си</div>
+      <div class="option" data-q="5" data-val="5d">Да намеря следващата конкретна стъпка</div>
+    </div>
+    <button class="nav-btn" id="btn5" onclick="showResult()">Виж анализа →</button>
+  </div>
+
+  <!-- RESULT 1 — Растящата -->
+  <div class="result-block" id="result1">
+    <div class="result-badge">Твоят тип</div>
+    <div class="result-title">Растящата</div>
+    <div class="result-subtitle">„Работиш много. Резултатите не отговарят на вложеното."</div>
+    <div class="result-divider"></div>
+    <div class="result-analysis">
+      Имаш нужда от маркетинг — защото в момента клиентите идват случайно, не системно. Не знаеш как да се позиционираш, как да привличаш правилните хора и как да определиш цени, които отразяват реалната стойност на работата ти. Резултатът: работиш повече от необходимото за по-малко от заслуженото.<br><br>
+      Без маркетингова система ще продължаваш да разчиташ на случайността — а случайността не е стратегия.
+    </div>
+    <div class="cta-section">
+      <div class="cta-section-label">Ако искаш да го промениш</div>
+      <h3>Вземи безплатния наръчник „Маркетинг магьосник"</h3>
+      <p>Въведи имейла си и ще го получиш веднага.</p>
+      <div class="email-inline">
+        <input type="email" class="email-field" placeholder="твоят@имейл.com" />
+        <button onclick="submitEmail(this, 't1')">Изтегли безплатно →</button>
+      </div>
+      
+      <div class="success-msg" id="success1">
+        <p>Готово! Ето наръчника:</p>
+        <a href="ЛИНК_МАРКЕТИНГ_НАРЪЧНИК" class="success-link" target="_blank">Маркетинг магьосник →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT 2 — Изтощената -->
+  <div class="result-block" id="result2">
+    <div class="result-badge">Твоят тип</div>
+    <div class="result-title">Изтощената</div>
+    <div class="result-subtitle">„Тялото ти вече говори. Времето е сега."</div>
+    <div class="result-divider"></div>
+    <div class="result-analysis">
+      Имаш нужда от две неща едновременно — маркетинг, който привлича правилните клиенти и елиминира изтощителните, и организация, която освобождава времето и енергията ти. В момента работиш максимален капацитет с минимална ефективност.<br><br>
+      Всяка година която изчакаш, е година по-малко капацитет и по-малко енергия да го промениш. Моментът е сега.
+    </div>
+    <div class="cta-section">
+      <div class="cta-section-label">Ако искаш да го промениш</div>
+      <h3>Вземи безплатно и двата наръчника</h3>
+      <p>„Маркетинг магьосник" + „Стратегът маникюрист" — въведи имейла си и ги получи веднага.</p>
+      <div class="email-inline">
+        <input type="email" class="email-field" placeholder="твоят@имейл.com" />
+        <button onclick="submitEmail(this, 't2')">Изтегли безплатно →</button>
+      </div>
+      
+      <div class="success-msg" id="success2">
+        <p>Готово! Ето наръчниците:</p>
+        <a href="ЛИНК_МАРКЕТИНГ_НАРЪЧНИК" class="success-link" target="_blank">Маркетинг магьосник →</a>
+        <a href="ЛИНК_СТРАТЕГ_НАРЪЧНИК" class="success-link" target="_blank">Стратегът маникюрист →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT 3 — Утвърдената -->
+  <div class="result-block" id="result3">
+    <div class="result-badge">Твоят тип</div>
+    <div class="result-title">Утвърдената</div>
+    <div class="result-subtitle">„Имаш опита. Следващото ниво те чака."</div>
+    <div class="result-divider"></div>
+    <div class="result-analysis">
+      Ти вече си минала пътя — имаш умения, имаш клиенти, имаш репутация. Следващата стъпка не е повече маркетинг или повече организация. Тя е да предадеш знанието си на другите и да изградиш нещо по-голямо от себе си.<br><br>
+      За да преподаваш професионално трябва методика — как да структурираш урок, как да работиш с различни типове ученици, как да ценообразуваш обученията си. Точно това дава „Уверени преподаватели".
+    </div>
+    <div class="cta-section">
+      <div class="cta-section-label">Ако искаш да го промениш</div>
+      <h3>Разгледай „Уверени преподаватели"</h3>
+      <p>Онлайн обучение с методика, учебни програми, ценообразуване и маркетинг за преподаватели. 350 евро. Без пътуване.</p>
+      <a href="ЛИНК_УВЕРЕНИ_ПРЕПОДАВАТЕЛИ" class="cta-link" target="_blank">
+        <div>
+          <div class="cta-link-label">Програма</div>
+          <div class="cta-link-title">Уверени преподаватели</div>
+        </div>
+        <div class="cta-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- RESULT 4 — Готовата -->
+  <div class="result-block" id="result4">
+    <div class="result-badge">Твоят тип</div>
+    <div class="result-title">Готовата</div>
+    <div class="result-subtitle">„Едно нещо те промени. Системата е следващото."</div>
+    <div class="result-divider"></div>
+    <div class="result-analysis">
+      Ти действаш когато видиш конкретен резултат — и това е силата ти. Но в момента имаш парчета без обща рамка. Имаш нужда и от маркетинг, който работи системно, и от организация, която свързва всичко заедно.<br><br>
+      Когато намериш инструмент, който работи — действаш бързо. Точно затова следващата ти стъпка е проста.
+    </div>
+    <div class="cta-section">
+      <div class="cta-section-label">Ако искаш да го промениш</div>
+      <h3>Вземи безплатно и двата наръчника</h3>
+      <p>„Маркетинг магьосник" + „Стратегът маникюрист" — въведи имейла си и ги получи веднага.</p>
+      <div class="email-inline">
+        <input type="email" class="email-field" placeholder="твоят@имейл.com" />
+        <button onclick="submitEmail(this, 't4')">Изтегли безплатно →</button>
+      </div>
+      
+      <div class="success-msg" id="success4">
+        <p>Готово! Ето наръчниците:</p>
+        <a href="ЛИНК_МАРКЕТИНГ_НАРЪЧНИК" class="success-link" target="_blank">Маркетинг магьосник →</a>
+        <a href="ЛИНК_СТРАТЕГ_НАРЪЧНИК" class="success-link" target="_blank">Стратегът маникюрист →</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Стратегическия Маникюрист · <span>PrimaDonna Nails Salon & School</span></p>
+</footer>
+
+<script>
+const answers = {};
+const scoreMap = {
+  '1a': {t1:3}, '1b': {t1:3}, '1c': {t2:3}, '1d': {t3:3}, '1e': {t4:3},
+  '2a': {t1:2}, '2b': {t2:2}, '2c': {t3:2}, '2d': {t4:2},
+  '3a': {t1:1,t4:1}, '3b': {t2:1}, '3c': {t3:1},
+  '4a': {t1:2}, '4b': {t2:2}, '4c': {t3:2}, '4d': {t4:2},
+  '5a': {t1:1,t4:1}, '5b': {t2:1}, '5c': {t3:1}, '5d': {t4:1},
+};
+
+document.querySelectorAll('.option').forEach(opt => {
+  opt.addEventListener('click', function() {
+    const q = this.dataset.q;
+    document.querySelectorAll(`.option[data-q="${q}"]`).forEach(o => o.classList.remove('selected'));
+    this.classList.add('selected');
+    answers[q] = this.dataset.val;
+    document.getElementById('btn' + q).classList.add('visible');
+  });
+});
+
+function goNext(n) {
+  if (!answers[n-1]) return;
+  document.getElementById('q'+(n-1)).classList.remove('active');
+  document.getElementById('q'+n).classList.add('active');
+  const pct = ((n-1)/5)*100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = 'Въпрос ' + n + ' от 5';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function calcType() {
+  const s = {t1:0, t2:0, t3:0, t4:0};
+  Object.values(answers).forEach(v => {
+    const pts = scoreMap[v] || {};
+    Object.entries(pts).forEach(([t,p]) => s[t] += p);
+  });
+  return Object.entries(s).sort((a,b) => b[1]-a[1])[0][0];
+}
+
+function showResult() {
+  if (!answers[5]) return;
+  const type = calcType();
+  const map = {t1:'result1', t2:'result2', t3:'result3', t4:'result4'};
+  document.getElementById('q5').classList.remove('active');
+  document.getElementById(map[type]).classList.add('active');
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressText').textContent = 'Твоят анализ';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function submitEmail(btn, type) {
+  const wrap = btn.closest('.cta-section');
+  const input = wrap.querySelector('.email-field');
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) {
+    input.style.borderColor = 'var(--rose-dark)';
+    input.placeholder = 'Моля въведи валиден имейл';
+    return;
+  }
+  const tagMap = {t1:'тип1_салон', t2:'тип2_бизнес', t3:'тип3_преподавател', t4:'тип1_салон'};
+  fetch('https://api.convertkit.com/v3/forms/КИТ_FORM_ID/subscribe', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({api_key:'КИТ_АПИ_КЛЮЧ', email: email, tags:[tagMap[type]]})
+  }).catch(()=>{});
+  wrap.querySelector('.email-inline').style.display = 'none';
+  wrap.querySelector('.email-note').style.display = 'none';
+  const num = type.replace('t','');
+  const el = document.getElementById('success' + num);
+  if (el) el.style.display = 'block';
+}
+</script>
+</body>
+</html>
