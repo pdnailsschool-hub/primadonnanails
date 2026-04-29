@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бизнес Калкулатор за Ценообразуване — PrimaDonna</title>
+    <title>Бизнес Калкулатор PrimaDonna — Стратегическо Ценообразуване</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -18,60 +18,79 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'DM Sans', sans-serif; background: var(--pink-pale); color: var(--text); line-height: 1.6; }
-        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
         
         header { text-align: center; margin-bottom: 40px; }
-        h1 { font-family: 'Cormorant Garamond', serif; font-size: 38px; color: var(--purple-dark); font-weight: 300; }
-        .subtitle { font-size: 14px; color: var(--text-light); margin-top: 10px; }
+        h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 5vw, 42px); color: var(--purple-dark); font-weight: 300; }
+        .subtitle { font-size: 14px; color: var(--text-light); margin-top: 10px; max-width: 500px; margin-left: auto; margin-right: auto; }
 
-        .section { background: var(--white); border-radius: 20px; padding: 30px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
-        .section-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; margin-bottom: 20px; border-bottom: 1px solid var(--pink-light); padding-bottom: 10px; color: var(--purple); }
+        .section { background: var(--white); border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+        .section-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; margin-bottom: 20px; border-bottom: 1.5px solid var(--pink-light); padding-bottom: 10px; color: var(--purple); display: flex; justify-content: space-between; align-items: center; }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
-
-        .field { margin-bottom: 15px; }
-        label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); margin-bottom: 8px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .field { margin-bottom: 12px; }
+        label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); margin-bottom: 6px; font-weight: 600; }
+        
         .input-wrap { position: relative; display: flex; align-items: center; }
-        input { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 15px; background: var(--pink-pale); transition: 0.3s; }
-        input:focus { outline: none; border-color: var(--purple); background: white; }
-        .unit { position: absolute; right: 15px; font-size: 12px; color: var(--text-light); }
+        input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; background: var(--pink-pale); transition: 0.2s; }
+        input:focus { outline: none; border-color: var(--purple); background: white; box-shadow: 0 0 0 3px rgba(155,107,181,0.1); }
+        .unit { position: absolute; right: 12px; font-size: 11px; color: var(--text-light); pointer-events: none; }
 
-        .calc-btn { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%); color: white; border: none; border-radius: 15px; font-family: 'Cormorant Garamond', serif; font-size: 22px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(155,107,181,0.3); }
+        .calc-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%); color: white; border: none; border-radius: 12px; font-family: 'Cormorant Garamond', serif; font-size: 22px; cursor: pointer; transition: 0.3s; margin: 20px 0; }
+        .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(155,107,181,0.3); }
 
-        #results { margin-top: 30px; display: none; }
-        .analysis-box { padding: 25px; border-radius: 15px; margin-top: 20px; text-align: center; font-weight: 500; border: 1.5px solid transparent; }
-        .analysis-red { background: var(--red-light); color: var(--red); border-color: #D5A8A8; }
-        .analysis-green { background: var(--green-light); color: var(--green); border-color: #A8D5B8; }
+        /* RESULTS AREA */
+        #results { display: none; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .summary-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--border); }
-        .summary-item strong { color: var(--purple-dark); font-size: 18px; }
+        .result-card { background: var(--white); border-radius: 20px; padding: 30px; border: 1.5px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+        .result-card::after { content: '💅'; position: absolute; right: 20px; top: 20px; font-size: 40px; opacity: 0.1; }
 
-        .cta-section { background: linear-gradient(135deg, #1A0A2E 0%, #2D1050 100%); color: white; border-radius: 20px; padding: 40px; text-align: center; margin-top: 40px; }
-        .cta-btn { display: inline-block; margin-top: 20px; padding: 15px 35px; background: var(--pink); color: white; text-decoration: none; border-radius: 50px; font-weight: 600; transition: 0.3s; }
-        .cta-btn:hover { transform: scale(1.05); background: #C06080; }
+        .hero-price { text-align: center; margin-bottom: 25px; }
+        .hero-price span { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-light); }
+        .hero-price h2 { font-family: 'Cormorant Garamond', serif; font-size: 48px; color: var(--purple); line-height: 1; margin-top: 5px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-item { background: var(--pink-pale); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border); }
+        .stat-label { font-size: 9px; text-transform: uppercase; color: var(--text-light); margin-bottom: 5px; }
+        .stat-val { font-size: 16px; font-weight: 600; color: var(--text); }
+
+        .analysis-box { padding: 20px; border-radius: 12px; font-size: 14px; line-height: 1.5; margin-bottom: 20px; border-left: 5px solid; }
+        .analysis-red { background: var(--red-light); color: var(--red); border-color: var(--red); }
+        .analysis-green { background: var(--green-light); color: var(--green); border-color: var(--green); }
+
+        /* CTA BOX */
+        .cta-box { background: linear-gradient(135deg, #1A0A2E 0%, #2D1050 100%); border-radius: 20px; padding: 35px; text-align: center; color: white; margin-top: 30px; }
+        .cta-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 26px; margin-bottom: 15px; font-weight: 300; }
+        .cta-box h3 em { color: var(--pink); font-style: italic; }
+        .cta-link { display: inline-block; padding: 14px 35px; background: var(--pink); color: white; text-decoration: none; border-radius: 50px; font-weight: 600; transition: 0.3s; margin-top: 15px; }
+        .cta-link:hover { transform: scale(1.05); background: #C06080; }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 32px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>Професионален <em>Калкулатор</em></h1>
-        <p class="subtitle">Инструмент за прецизно ценообразуване в салон за красота</p>
+        <h1>Стратегически <em>Калкулатор</em></h1>
+        <p class="subtitle">Професионален инструмент за анализ на рентабилността по модела на PrimaDonna Nails</p>
     </header>
 
     <div class="section">
-        <div class="section-title">1. Месечни фиксирани разходи</div>
+        <div class="section-title">1. Месечни разходи на обекта</div>
         <div class="grid">
             <div class="field"><label>Наем</label><div class="input-wrap"><input type="number" id="rent" value="200"><span class="unit">€</span></div></div>
             <div class="field"><label>Електричество</label><div class="input-wrap"><input type="number" id="electric" value="100"><span class="unit">€</span></div></div>
             <div class="field"><label>Счетоводител</label><div class="input-wrap"><input type="number" id="accountant" value="50"><span class="unit">€</span></div></div>
-            <div class="field"><label>Осигуровки</label><div class="input-wrap"><input type="number" id="taxes" value="200"><span class="unit">€</span></div></div>
+            <div class="field"><label>Осигуровки</label><div class="input-wrap"><input type="number" id="insurance" value="200"><span class="unit">€</span></div></div>
             <div class="field"><label>Заплата</label><div class="input-wrap"><input type="number" id="salary" value="1500"><span class="unit">€</span></div></div>
-            <div class="field"><label>Други (СОТ, Нет, Вода)</label><div class="input-wrap"><input type="number" id="others" value="45"><span class="unit">€</span></div></div>
+            <div class="field"><label>СОТ/Интернет/Вода</label><div class="input-wrap"><input type="number" id="others" value="45"><span class="unit">€</span></div></div>
         </div>
-        <div class="field" style="margin-top:15px;">
+        <div class="field" style="max-width: 300px; margin-top: 10px;">
             <label>Работни часове в месеца</label>
             <div class="input-wrap"><input type="number" id="workHours" value="176"><span class="unit">h</span></div>
         </div>
@@ -82,82 +101,104 @@
         <div class="grid">
             <div class="field">
                 <label>Времетраене (в минути)</label>
-                <div class="input-wrap"><input type="number" id="procMinutes" value="60"><span class="unit">мин</span></div>
+                <div class="input-wrap"><input type="number" id="procMin" value="60"><span class="unit">мин</span></div>
             </div>
             <div class="field">
-                <label>Разход материали</label>
+                <label>Материали (общо)</label>
                 <div class="input-wrap"><input type="number" id="matCost" value="1.21" step="0.01"><span class="unit">€</span></div>
             </div>
-        </div>
-        <div class="field">
-            <label>Вашата текуща цена</label>
-            <div class="input-wrap"><input type="number" id="currentPrice" placeholder="Въведете цена..."><span class="unit">€</span></div>
+            <div class="field">
+                <label>Вашата текуща цена</label>
+                <div class="input-wrap" style="background: #fff;"><input type="number" id="currentPrice" placeholder="0.00" style="background: #fff; border-color: var(--purple);"><span class="unit">€</span></div>
+            </div>
         </div>
     </div>
 
-    <button class="calc-btn" onclick="calculate()">Изчисли Идеалната Цена</button>
+    <button class="calc-btn" onclick="runAnalysis()">АНАЛИЗИРАЙ БИЗНЕСА</button>
 
     <div id="results">
-        <div class="section">
-            <div class="section-title">Анализ на резултатите</div>
-            <div class="summary-item"><span>Разход за време (минута):</span><span id="costPerMin">0.00 €</span></div>
-            <div class="summary-item"><span>Общ разход за процедурата:</span><span id="totalCost">0.00 €</span></div>
-            <div class="summary-item"><span>Идеална продажна цена:</span><strong id="idealPrice">0.00 €</strong></div>
+        <div class="result-card">
+            <div class="hero-price">
+                <span>Препоръчителна "Идеална Цена"</span>
+                <h2 id="idealPriceDisplay">0.00 €</h2>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Себестойност (Труд)</div>
+                    <div class="stat-val" id="laborCost">0.00 €</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Себестойност (Общо)</div>
+                    <div class="stat-val" id="totalBase">0.00 €</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Разход за минута</div>
+                    <div class="stat-val" id="minCost">0.00 €</div>
+                </div>
+            </div>
+
+            <div id="analysisMsg" class="analysis-box"></div>
             
-            <div id="analysisResult" class="analysis-box"></div>
+            <div style="font-size: 11px; color: var(--text-light); text-align: center;">
+                * Цената е изчислена чрез <strong>Метода на Маржа (0.60)</strong>, който автоматично включва 15% данъци, 15% реинвестиция/амортизация и 10% чиста печалба.
+            </div>
         </div>
 
-        <div class="cta-section">
-            <h2>Искаш ли бизнесът ти да бъде печеливш?</h2>
-            <p>Този калкулатор е само началото. Научи се как да управляваш финансите си професионално.</p>
-            <a href="ВАШИЯТ_ЛИНК_КЪМ_ОБУЧЕНИЕТО" class="cta-btn">Запиши се за обучението по ценообразуване</a>
+        <div class="cta-box">
+            <h3>Искаш ли да спреш да <em>подаряваш труда си?</em></h3>
+            <p>Този анализ е само първата стъпка. В моето обучение по ценообразуване ще научиш стратегическите техники за позициониране и продажби.</p>
+            <a href="https://pdnailsschool.com/pricing-course" class="cta-link">ЗАПИШИ СЕ ЗА ОБУЧЕНИЕТО</a>
         </div>
     </div>
 </div>
 
 <script>
-    function calculate() {
-        // 1. Вземане на данни
+    function runAnalysis() {
+        // Inputs
         const rent = parseFloat(document.getElementById('rent').value) || 0;
         const electric = parseFloat(document.getElementById('electric').value) || 0;
         const accountant = parseFloat(document.getElementById('accountant').value) || 0;
-        const taxes = parseFloat(document.getElementById('taxes').value) || 0;
+        const insurance = parseFloat(document.getElementById('insurance').value) || 0;
         const salary = parseFloat(document.getElementById('salary').value) || 0;
         const others = parseFloat(document.getElementById('others').value) || 0;
-        const workHours = parseFloat(document.getElementById('workHours').value) || 176;
+        const hours = parseFloat(document.getElementById('workHours').value) || 176;
 
-        const procMinutes = parseFloat(document.getElementById('procMinutes').value) || 0;
-        const matCost = parseFloat(document.getElementById('matCost').value) || 0;
-        const currentPrice = parseFloat(document.getElementById('currentPrice').value) || 0;
+        const minutes = parseFloat(document.getElementById('procMin').value) || 0;
+        const materials = parseFloat(document.getElementById('matCost').value) || 0;
+        const current = parseFloat(document.getElementById('currentPrice').value) || 0;
 
-        // 2. Логика
-        const totalFixedCosts = rent + electric + accountant + taxes + salary + others;
-        const costPerHour = totalFixedCosts / workHours;
-        const costPerMin = costPerHour / 60;
+        // Logic
+        const monthlyTotal = rent + electric + accountant + insurance + salary + others;
+        const hourlyRate = monthlyTotal / hours;
+        const minRate = hourlyRate / 60;
+        const laborExpense = minRate * minutes;
+        const baseCost = laborExpense + materials;
         
-        const timeExpense = costPerMin * procMinutes;
-        const totalBaseCost = timeExpense + matCost;
-        
-        // Формула по метода на маржа: Разходи / 0.60
-        const idealPrice = Math.ceil(totalBaseCost / 0.60);
+        // Margin Formula (Professional)
+        const ideal = Math.ceil(baseCost / 0.60);
 
-        // 3. Показване на резултати
+        // Display
         document.getElementById('results').style.display = 'block';
-        document.getElementById('costPerMin').textContent = costPerMin.toFixed(2) + ' €';
-        document.getElementById('totalCost').textContent = totalBaseCost.toFixed(2) + ' €';
-        document.getElementById('idealPrice').textContent = idealPrice.toFixed(2) + ' €';
+        document.getElementById('minCost').textContent = minRate.toFixed(2) + ' €';
+        document.getElementById('laborCost').textContent = laborExpense.toFixed(2) + ' €';
+        document.getElementById('totalBase').textContent = baseCost.toFixed(2) + ' €';
+        document.getElementById('idealPriceDisplay').textContent = ideal.toFixed(2) + ' €';
 
-        const analysisBox = document.getElementById('analysisResult');
-        if (currentPrice < idealPrice) {
-            const loss = idealPrice - currentPrice;
-            analysisBox.className = 'analysis-box analysis-red';
-            analysisBox.innerHTML = `Внимание! Вие подарявате на клиента <strong>${loss.toFixed(2)} €</strong> на всяка процедура. Вашата цена трябва да бъде минимум <strong>${idealPrice.toFixed(2)} €</strong>!`;
+        const msg = document.getElementById('analysisMsg');
+        if (current === 0) {
+            msg.className = 'analysis-box analysis-red';
+            msg.innerHTML = 'Въведете текущата си цена, за да видите анализа на загубите.';
+        } else if (current < ideal) {
+            const diff = ideal - current;
+            msg.className = 'analysis-box analysis-red';
+            msg.innerHTML = `⚠️ <strong>Внимание:</strong> Губите по <strong>${diff.toFixed(2)} €</strong> от всяка процедура. Вашата цена е под критичния минимум за устойчив бизнес.`;
         } else {
-            analysisBox.className = 'analysis-box analysis-green';
-            analysisBox.innerHTML = `Поздравления! Вашият бизнес е устойчив и печеливш.`;
+            msg.className = 'analysis-box analysis-green';
+            msg.innerHTML = `✅ <strong>Поздравления!</strong> Вашата цена от ${current.toFixed(2)} € е над критичния минимум. Вашият бизнес модел е стабилен.`;
         }
-        
-        window.scrollTo({ top: document.getElementById('results').offsetTop, behavior: 'smooth' });
+
+        window.scrollTo({ top: document.getElementById('results').offsetTop - 20, behavior: 'smooth' });
     }
 </script>
 
