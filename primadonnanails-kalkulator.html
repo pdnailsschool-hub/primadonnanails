@@ -1,206 +1,68 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бизнес Калкулатор PrimaDonna — Стратегическо Ценообразуване</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --pink: #E8A0B4; --pink-light: #F5D5E0; --pink-pale: #FDF5F7;
-            --purple: #9B6BB5; --purple-dark: #7A4E9A;
-            --text: #2D2D2D; --text-light: #7A6070;
-            --border: #EDD5DF; --white: #FFFFFF;
-            --green: #2D7A4A; --green-light: #E8F5ED;
-            --red: #C0392B; --red-light: #FDECEA;
-            --shadow: 0 4px 20px rgba(155,107,181,.10);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--pink-pale); color: var(--text); line-height: 1.6; }
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        
-        header { text-align: center; margin-bottom: 40px; }
-        h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 5vw, 42px); color: var(--purple-dark); font-weight: 300; }
-        .subtitle { font-size: 14px; color: var(--text-light); margin-top: 10px; max-width: 500px; margin-left: auto; margin-right: auto; }
-
-        .section { background: var(--white); border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
-        .section-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; margin-bottom: 20px; border-bottom: 1.5px solid var(--pink-light); padding-bottom: 10px; color: var(--purple); display: flex; justify-content: space-between; align-items: center; }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .field { margin-bottom: 12px; }
-        label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); margin-bottom: 6px; font-weight: 600; }
-        
-        .input-wrap { position: relative; display: flex; align-items: center; }
-        input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; background: var(--pink-pale); transition: 0.2s; }
-        input:focus { outline: none; border-color: var(--purple); background: white; box-shadow: 0 0 0 3px rgba(155,107,181,0.1); }
-        .unit { position: absolute; right: 12px; font-size: 11px; color: var(--text-light); pointer-events: none; }
-
-        .calc-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%); color: white; border: none; border-radius: 12px; font-family: 'Cormorant Garamond', serif; font-size: 22px; cursor: pointer; transition: 0.3s; margin: 20px 0; }
-        .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(155,107,181,0.3); }
-
-        /* RESULTS AREA */
-        #results { display: none; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .result-card { background: var(--white); border-radius: 20px; padding: 30px; border: 1.5px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
-        .result-card::after { content: '💅'; position: absolute; right: 20px; top: 20px; font-size: 40px; opacity: 0.1; }
-
-        .hero-price { text-align: center; margin-bottom: 25px; }
-        .hero-price span { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-light); }
-        .hero-price h2 { font-family: 'Cormorant Garamond', serif; font-size: 48px; color: var(--purple); line-height: 1; margin-top: 5px; }
-
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-item { background: var(--pink-pale); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border); }
-        .stat-label { font-size: 9px; text-transform: uppercase; color: var(--text-light); margin-bottom: 5px; }
-        .stat-val { font-size: 16px; font-weight: 600; color: var(--text); }
-
-        .analysis-box { padding: 20px; border-radius: 12px; font-size: 14px; line-height: 1.5; margin-bottom: 20px; border-left: 5px solid; }
-        .analysis-red { background: var(--red-light); color: var(--red); border-color: var(--red); }
-        .analysis-green { background: var(--green-light); color: var(--green); border-color: var(--green); }
-
-        /* CTA BOX */
-        .cta-box { background: linear-gradient(135deg, #1A0A2E 0%, #2D1050 100%); border-radius: 20px; padding: 35px; text-align: center; color: white; margin-top: 30px; }
-        .cta-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 26px; margin-bottom: 15px; font-weight: 300; }
-        .cta-box h3 em { color: var(--pink); font-style: italic; }
-        .cta-link { display: inline-block; padding: 14px 35px; background: var(--pink); color: white; text-decoration: none; border-radius: 50px; font-weight: 600; transition: 0.3s; margin-top: 15px; }
-        .cta-link:hover { transform: scale(1.05); background: #C06080; }
-
-        @media (max-width: 600px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            h1 { font-size: 32px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калкулатор за Ценообразуване — PrimaDonna</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#E8A0B4;--pink-light:#F5D5E0;--pink-pale:#FDF5F7;
+  --purple:#9B6BB5;--purple-dark:#7A4E9A;
+  --text:#2D2D2D;--text-light:#7A6070;
+  --border:#EDD5DF;--white:#FFFFFF;
+  --green:#2D7A4A;--green-light:#E8F5ED;--green-dark:#1A4A2E;
+  --yellow:#D4860A;--yellow-light:#FEF5E4;--yellow-dark:#7A5000;
+  --red:#C0392B;--red-light:#FDECEA;--red-dark:#7A1A1A;
+  --shadow:0 4px 20px rgba(155,107,181,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--pink-pale);color:var(--text);line-height:1.6;padding:20px 0;}
+.container{max-width:900px;margin:0 auto;padding:0 20px;}
+header{text-align:center;margin-bottom:40px;}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,6vw,42px);color:var(--purple-dark);font-weight:300;margin-bottom:10px;}
+.section{background:var(--white);border-radius:24px;padding:30px;margin-bottom:25px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:25px;color:var(--purple);border-bottom:1.5px solid var(--pink-light);padding-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:650px){.grid-2{grid-template-columns:1fr;}}
+.input-group{margin-bottom:18px;}
+label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:8px;font-weight:600;}
+.input-wrapper{position:relative;display:flex;align-items:center;}
+input,select{width:100%;padding:12px 15px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;background:var(--pink-pale);transition:0.2s;font-family:inherit;}
+input:focus{outline:none;border-color:var(--purple);background:white;box-shadow:0 0 0 4px rgba(155,107,181,0.1);}
+.unit{position:absolute;right:15px;font-size:12px;color:var(--text-light);font-weight:500;}
+.btn-primary{width:100%;padding:20px;background:linear-gradient(135deg,var(--purple) 0%,var(--purple-dark) 100%);color:white;border:none;border-radius:16px;font-family:'Cormorant Garamond',serif;font-size:24px;cursor:pointer;transition:0.3s;box-shadow:0 10px 25px rgba(155,107,181,0.25);margin-top:10px;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 15px 35px rgba(155,107,181,0.35);}
+#results-area{display:none;margin-top:40px;}
+.svc-card{background:white;border-radius:20px;border:1px solid var(--border);padding:20px;margin-bottom:20px;transition:0.3s;}
+.svc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:15px;}
+.svc-name{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--purple-dark);font-weight:600;}
+.svc-detail{font-size:13px;color:var(--text-light);}
+.svc-recommended{font-size:28px;font-weight:500;color:var(--purple);}
+.svc-diagnosis{margin-top:15px;padding:12px;border-radius:10px;font-size:14px;font-weight:500;}
+.diag-red{background:var(--red-light);color:var(--red);border:1px solid #F5C6CB;}
+.diag-green{background:var(--green-light);color:var(--green);border:1px solid #C3E6CB;}
+.mkt-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px dashed var(--border);}
+.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;}
+.badge-green{background:var(--green-light);color:var(--green-dark);}
+.badge-yellow{background:var(--yellow-light);color:var(--yellow-dark);}
+.badge-red{background:var(--red-light);color:var(--red-dark);}
+.cta-box{background:linear-gradient(135deg,#1A0A2E 0%,#2D1050 100%);color:white;padding:40px;border-radius:24px;text-align:center;margin-top:50px;}
+.cta-box h3{font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:15px;}
+.cta-box p{margin-bottom:25px;opacity:0.9;}
+.cta-btn{display:inline-block;padding:15px 40px;background:var(--pink);color:white;text-decoration:none;border-radius:50px;font-weight:700;transition:0.3s;}
+.cta-btn:hover{transform:scale(1.05);background:#d88ea3;}
+</style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>Стратегически <em>Калкулатор</em></h1>
-        <p class="subtitle">Професионален инструмент за анализ на рентабилността по модела на PrimaDonna Nails</p>
-    </header>
+  <header>
+    <h1>Калкулатор PrimaDonna</h1>
+    <p>Професионален инструмент за бизнес анализ и ценообразуване</p>
+  </header>
 
-    <div class="section">
-        <div class="section-title">1. Месечни разходи на обекта</div>
-        <div class="grid">
-            <div class="field"><label>Наем</label><div class="input-wrap"><input type="number" id="rent" value="200"><span class="unit">€</span></div></div>
-            <div class="field"><label>Електричество</label><div class="input-wrap"><input type="number" id="electric" value="100"><span class="unit">€</span></div></div>
-            <div class="field"><label>Счетоводител</label><div class="input-wrap"><input type="number" id="accountant" value="50"><span class="unit">€</span></div></div>
-            <div class="field"><label>Осигуровки</label><div class="input-wrap"><input type="number" id="insurance" value="200"><span class="unit">€</span></div></div>
-            <div class="field"><label>Заплата</label><div class="input-wrap"><input type="number" id="salary" value="1500"><span class="unit">€</span></div></div>
-            <div class="field"><label>СОТ/Интернет/Вода</label><div class="input-wrap"><input type="number" id="others" value="45"><span class="unit">€</span></div></div>
-        </div>
-        <div class="field" style="max-width: 300px; margin-top: 10px;">
-            <label>Работни часове в месеца</label>
-            <div class="input-wrap"><input type="number" id="workHours" value="176"><span class="unit">h</span></div>
-        </div>
-    </div>
-
-    <div class="section">
-        <div class="section-title">2. Параметри на процедурата</div>
-        <div class="grid">
-            <div class="field">
-                <label>Времетраене (в минути)</label>
-                <div class="input-wrap"><input type="number" id="procMin" value="60"><span class="unit">мин</span></div>
-            </div>
-            <div class="field">
-                <label>Материали (общо)</label>
-                <div class="input-wrap"><input type="number" id="matCost" value="1.21" step="0.01"><span class="unit">€</span></div>
-            </div>
-            <div class="field">
-                <label>Вашата текуща цена</label>
-                <div class="input-wrap" style="background: #fff;"><input type="number" id="currentPrice" placeholder="0.00" style="background: #fff; border-color: var(--purple);"><span class="unit">€</span></div>
-            </div>
-        </div>
-    </div>
-
-    <button class="calc-btn" onclick="runAnalysis()">АНАЛИЗИРАЙ БИЗНЕСА</button>
-
-    <div id="results">
-        <div class="result-card">
-            <div class="hero-price">
-                <span>Препоръчителна "Идеална Цена"</span>
-                <h2 id="idealPriceDisplay">0.00 €</h2>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-label">Себестойност (Труд)</div>
-                    <div class="stat-val" id="laborCost">0.00 €</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Себестойност (Общо)</div>
-                    <div class="stat-val" id="totalBase">0.00 €</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Разход за минута</div>
-                    <div class="stat-val" id="minCost">0.00 €</div>
-                </div>
-            </div>
-
-            <div id="analysisMsg" class="analysis-box"></div>
-            
-            <div style="font-size: 11px; color: var(--text-light); text-align: center;">
-                * Цената е изчислена чрез <strong>Метода на Маржа (0.60)</strong>, който автоматично включва 15% данъци, 15% реинвестиция/амортизация и 10% чиста печалба.
-            </div>
-        </div>
-
-        <div class="cta-box">
-            <h3>Искаш ли да спреш да <em>подаряваш труда си?</em></h3>
-            <p>Този анализ е само първата стъпка. В моето обучение по ценообразуване ще научиш стратегическите техники за позициониране и продажби.</p>
-            <a href="https://pdnailsschool.com/pricing-course" class="cta-link">ЗАПИШИ СЕ ЗА ОБУЧЕНИЕТО</a>
-        </div>
-    </div>
-</div>
-
-<script>
-    function runAnalysis() {
-        // Inputs
-        const rent = parseFloat(document.getElementById('rent').value) || 0;
-        const electric = parseFloat(document.getElementById('electric').value) || 0;
-        const accountant = parseFloat(document.getElementById('accountant').value) || 0;
-        const insurance = parseFloat(document.getElementById('insurance').value) || 0;
-        const salary = parseFloat(document.getElementById('salary').value) || 0;
-        const others = parseFloat(document.getElementById('others').value) || 0;
-        const hours = parseFloat(document.getElementById('workHours').value) || 176;
-
-        const minutes = parseFloat(document.getElementById('procMin').value) || 0;
-        const materials = parseFloat(document.getElementById('matCost').value) || 0;
-        const current = parseFloat(document.getElementById('currentPrice').value) || 0;
-
-        // Logic
-        const monthlyTotal = rent + electric + accountant + insurance + salary + others;
-        const hourlyRate = monthlyTotal / hours;
-        const minRate = hourlyRate / 60;
-        const laborExpense = minRate * minutes;
-        const baseCost = laborExpense + materials;
-        
-        // Margin Formula (Professional)
-        const ideal = Math.ceil(baseCost / 0.60);
-
-        // Display
-        document.getElementById('results').style.display = 'block';
-        document.getElementById('minCost').textContent = minRate.toFixed(2) + ' €';
-        document.getElementById('laborCost').textContent = laborExpense.toFixed(2) + ' €';
-        document.getElementById('totalBase').textContent = baseCost.toFixed(2) + ' €';
-        document.getElementById('idealPriceDisplay').textContent = ideal.toFixed(2) + ' €';
-
-        const msg = document.getElementById('analysisMsg');
-        if (current === 0) {
-            msg.className = 'analysis-box analysis-red';
-            msg.innerHTML = 'Въведете текущата си цена, за да видите анализа на загубите.';
-        } else if (current < ideal) {
-            const diff = ideal - current;
-            msg.className = 'analysis-box analysis-red';
-            msg.innerHTML = `⚠️ <strong>Внимание:</strong> Губите по <strong>${diff.toFixed(2)} €</strong> от всяка процедура. Вашата цена е под критичния минимум за устойчив бизнес.`;
-        } else {
-            msg.className = 'analysis-box analysis-green';
-            msg.innerHTML = `✅ <strong>Поздравления!</strong> Вашата цена от ${current.toFixed(2)} € е над критичния минимум. Вашият бизнес модел е стабилен.`;
-        }
-
-        window.scrollTo({ top: document.getElementById('results').offsetTop - 20, behavior: 'smooth' });
-    }
-</script>
-
-</body>
-</html>
+  <div class="section">
+    <div class="section-title">1. Месечни фиксирани разходи</div>
+    <div class="grid-2">
+      <div class="input-group"><label>Наем</label><div class="input-wrapper"><input type="number" id="rent" value="200"><span class="unit">€
