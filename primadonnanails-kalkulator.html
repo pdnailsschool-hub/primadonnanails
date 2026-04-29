@@ -1,100 +1,121 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калкулатор PrimaDonna</title>
-    <style>
-        body { font-family: sans-serif; background: #FDF5F7; color: #2D2D2D; padding: 20px; margin: 0; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; border: 1px solid #EDD5DF; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        h1 { color: #7A4E9A; text-align: center; font-size: 24px; }
-        h3 { border-bottom: 1px solid #F5D5E0; padding-bottom: 5px; color: #9B6BB5; margin-top: 25px; }
-        .field { margin-bottom: 15px; }
-        label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #EDD5DF; border-radius: 8px; box-sizing: border-box; background: #FDF5F7; font-size: 16px; }
-        .btn { width: 100%; padding: 15px; background: #7A4E9A; color: white; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; margin-top: 20px; font-weight: bold; }
-        #results { display: none; margin-top: 25px; padding: 20px; border-radius: 10px; background: #f9f9f9; border: 1px solid #ddd; }
-        .price-box { text-align: center; font-size: 32px; color: #7A4E9A; font-weight: bold; margin: 10px 0; }
-        .diagnosis { padding: 15px; border-radius: 8px; margin-top: 15px; font-weight: bold; text-align: center; }
-        .red { background: #FDECEA; color: #C0392B; border: 1px solid #D5A8A8; }
-        .green { background: #E8F5ED; color: #2D7A4A; border: 1px solid #A8D5B8; }
-        .cta { background: #1A0A2E; color: white; padding: 20px; border-radius: 10px; text-align: center; margin-top: 30px; }
-        .cta a { color: #E8A0B4; font-weight: bold; text-decoration: none; font-size: 18px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калкулатор за Ценообразуване — PrimaDonna</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#E8A0B4;--pink-light:#F5D5E0;--pink-pale:#FDF5F7;
+  --purple:#9B6BB5;--purple-dark:#7A4E9A;
+  --text:#2D2D2D;--text-light:#7A6070;
+  --border:#EDD5DF;--white:#FFFFFF;
+  --green:#2D7A4A;--green-light:#E8F5ED;--green-dark:#1A4A2E;
+  --yellow:#D4860A;--yellow-light:#FEF5E4;--yellow-dark:#7A5000;
+  --red:#C0392B;--red-light:#FDECEA;--red-dark:#7A1A1A;
+  --shadow:0 4px 20px rgba(155,107,181,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--pink-pale);color:var(--text);line-height:1.6;padding:20px 0;}
+.container{max-width:900px;margin:0 auto;padding:0 20px;}
+.section{background:var(--white);border-radius:24px;padding:30px;margin-bottom:25px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:25px;color:var(--purple);border-bottom:1.5px solid var(--pink-light);padding-bottom:10px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:650px){.grid-2{grid-template-columns:1fr;}}
+.input-group{margin-bottom:18px;}
+label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:8px;font-weight:600;}
+.input-wrapper{position:relative;display:flex;align-items:center;}
+input,select{width:100%;padding:12px 15px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;background:var(--pink-pale);transition:0.2s;font-family:inherit;}
+input:focus{outline:none;border-color:var(--purple);background:white;box-shadow:0 0 0 4px rgba(155,107,181,0.1);}
+.unit{position:absolute;right:15px;font-size:12px;color:var(--text-light);font-weight:500;}
+.btn-primary{width:100%;padding:20px;background:linear-gradient(135deg,var(--purple) 0%,var(--purple-dark) 100%);color:white;border:none;border-radius:16px;font-family:'Cormorant Garamond',serif;font-size:24px;cursor:pointer;transition:0.3s;box-shadow:0 10px 25px rgba(155,107,181,0.25);width:100%;}
+#results-area{display:none;margin-top:40px;}
+.svc-card{background:white;border-radius:20px;border:1px solid var(--border);padding:20px;margin-bottom:20px;}
+.svc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:15px;}
+.svc-recommended{font-size:32px;font-weight:500;color:var(--purple);}
+.svc-diagnosis{margin-top:15px;padding:12px;border-radius:10px;font-size:14px;font-weight:500;}
+.diag-red{background:var(--red-light);color:var(--red);border:1px solid #F5C6CB;}
+.diag-green{background:var(--green-light);color:var(--green);border:1px solid #C3E6CB;}
+.cta-box{background:linear-gradient(135deg,#1A0A2E 0%,#2D1050 100%);color:white;padding:40px;border-radius:24px;text-align:center;margin-top:50px;}
+.cta-btn{display:inline-block;padding:15px 40px;background:var(--pink);color:white;text-decoration:none;border-radius:50px;font-weight:700;margin-top:20px;}
+</style>
 </head>
 <body>
-
 <div class="container">
-    <h1>Калкулатор PrimaDonna</h1>
-
-    <h3>1. Месечни разходи</h3>
-    <div class="field"><label>Наем (€)</label><input type="number" id="rent" value="200"></div>
-    <div class="field"><label>Електричество (€)</label><input type="number" id="electric" value="100"></div>
-    <div class="field"><label>Счетоводител (€)</label><input type="number" id="accountant" value="50"></div>
-    <div class="field"><label>Осигуровки (€)</label><input type="number" id="social" value="200"></div>
-    <div class="field"><label>Заплата (€)</label><input type="number" id="salary" value="1500"></div>
-    <div class="field"><label>Други (СОТ, Нет, Вода) (€)</label><input type="number" id="others" value="45"></div>
-    <div class="field"><label>Работни часове</label><input type="number" id="hours" value="176"></div>
-
-    <h3>2. Услуга</h3>
-    <div class="field"><label>Времетраене (минути)</label><input type="number" id="time" value="60"></div>
-    <div class="field"><label>Материали (€)</label><input type="number" id="mat" value="1.21" step="0.01"></div>
-    <div class="field"><label>Вашата текуща цена (€)</label><input type="number" id="current" placeholder="На колко продавате сега?"></div>
-
-    <button class="btn" onclick="calculate()">АНАЛИЗИРАЙ БИЗНЕСА</button>
-
-    <div id="results">
-        <div style="text-align:center; font-size:14px; text-transform:uppercase;">Идеална цена (Метод на Маржа):</div>
-        <div class="price-box" id="idealPrice">0.00 €</div>
-        <div id="diag" class="diagnosis"></div>
-        <div class="cta">
-            <p>Искаш ли бизнесът ти да е печеливш?</p>
-            <a href="https://pdnailsschool.com/pricing-course">ЗАПИШИ СЕ ЗА ОБУЧЕНИЕТО</a>
-        </div>
+  <div class="section">
+    <div class="section-title">1. Месечни фиксирани разходи</div>
+    <div class="grid-2">
+      <div class="input-group"><label>Наен</label><div class="input-wrapper"><input type="number" id="rent" value="200"><span class="unit">€</span></div></div>
+      <div class="input-group"><label>Електричество</label><div class="input-wrapper"><input type="number" id="electric" value="100"><span class="unit">€</span></div></div>
+      <div class="input-group"><label>Счетоводител</label><div class="input-wrapper"><input type="number" id="accountant" value="50"><span class="unit">€</span></div></div>
+      <div class="input-group"><label>Осигуровки</label><div class="input-wrapper"><input type="number" id="social" value="200"><span class="unit">€</span></div></div>
+      <div class="input-group"><label>Заплата</label><div class="input-wrapper"><input type="number" id="salary" value="1500"><span class="unit">€</span></div></div>
+      <div class="input-group"><label>СОТ/ТВ/Нет/Вода</label><div class="input-wrapper"><input type="number" id="others" value="45"><span class="unit">€</span></div></div>
     </div>
+    <div class="input-group"><label>Работни часове</label><div class="input-wrapper"><input type="number" id="hours" value="176"><span class="unit">ч</span></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">2. Параметри на процедурата</div>
+    <div class="grid-2">
+      <div class="input-group"><label>Времетраене (мин)</label><div class="input-wrapper"><input type="number" id="procTime" value="60"></div></div>
+      <div class="input-group"><label>Материали (Общо)</label><div class="input-wrapper"><input type="number" id="matCost" value="1.21" step="0.01"><span class="unit">€</span></div></div>
+    </div>
+    <div class="input-group"><label>Вашата текуща цена</label><div class="input-wrapper"><input type="number" id="currentPrice" placeholder="Въведи цена..."><span class="unit">€</span></div></div>
+  </div>
+
+  <button class="btn-primary" onclick="calculate()">АНАЛИЗИРАЙ</button>
+
+  <div id="results-area">
+    <div class="section">
+      <div class="section-title">Резултат от анализа</div>
+      <div id="main-result"></div>
+    </div>
+    <div class="cta-box">
+      <h3>Твоят бизнес заслужава да бъде печеливш!</h3>
+      <a href="https://pdnailsschool.com/pricing-course" class="cta-btn">ЗАПИШИ СЕ ЗА ОБУЧЕНИЕТО</a>
+    </div>
+  </div>
 </div>
 
 <script>
-    function calculate() {
-        const r = parseFloat(document.getElementById('rent').value) || 0;
-        const e = parseFloat(document.getElementById('electric').value) || 0;
-        const a = parseFloat(document.getElementById('accountant').value) || 0;
-        const s = parseFloat(document.getElementById('social').value) || 0;
-        const sal = parseFloat(document.getElementById('salary').value) || 0;
-        const o = parseFloat(document.getElementById('others').value) || 0;
-        const h = parseFloat(document.getElementById('hours').value) || 176;
+function calculate() {
+  const r = parseFloat(document.getElementById('rent').value)||0;
+  const e = parseFloat(document.getElementById('electric').value)||0;
+  const a = parseFloat(document.getElementById('accountant').value)||0;
+  const s = parseFloat(document.getElementById('social').value)||0;
+  const sal = parseFloat(document.getElementById('salary').value)||0;
+  const o = parseFloat(document.getElementById('others').value)||0;
+  const h = parseFloat(document.getElementById('hours').value)||176;
+  const t = parseFloat(document.getElementById('procTime').value)||0;
+  const m = parseFloat(document.getElementById('matCost').value)||0;
+  const curr = parseFloat(document.getElementById('currentPrice').value)||0;
 
-        const t = parseFloat(document.getElementById('time').value) || 0;
-        const m = parseFloat(document.getElementById('mat').value) || 0;
-        const curr = parseFloat(document.getElementById('current').value) || 0;
+  const totalFixed = r + e + a + s + sal + o;
+  const costMin = (totalFixed / h) / 60;
+  const expense = (t * costMin) + m;
+  const ideal = Math.ceil(expense / 0.60);
 
-        // ЛОГИКА
-        const totalMonthly = r + e + a + s + sal + o;
-        const costPerMin = (totalMonthly / h) / 60;
-        const baseCost = (t * costPerMin) + m;
-        
-        // ФОРМУЛА: Делене на 0.60
-        const ideal = Math.ceil(baseCost / 0.60);
-
-        document.getElementById('results').style.display = 'block';
-        document.getElementById('idealPrice').innerText = ideal.toFixed(2) + ' €';
-
-        const diag = document.getElementById('diag');
-        if (curr > 0) {
-            if (curr < ideal) {
-                diag.className = 'diagnosis red';
-                diag.innerHTML = 'ВНИМАНИЕ! Подарявате по ' + (ideal - curr).toFixed(2) + ' € на клиент. Вашата цена трябва да бъде минимум ' + ideal + ' €!';
-            } else {
-                diag.className = 'diagnosis green';
-                diag.innerHTML = 'ПОЗДРАВЛЕНИЯ! Вашият бизнес е устойчив и печеливш.';
-            }
-        } else {
-            diag.style.display = 'none';
-        }
-        
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  document.getElementById('results-area').style.display = 'block';
+  let diag = '';
+  if(curr > 0) {
+    if(curr < ideal) {
+      diag = `<div class="svc-diagnosis diag-red">Внимание! Вие подарявате на клиента ${(ideal-curr).toFixed(2)} € на всяка процедура. Вашата цена трябва да бъде минимум ${ideal} €!</div>`;
+    } else {
+      diag = `<div class="svc-diagnosis diag-green">Поздравления! Вашият бизнес е устойчив и печеливш.</div>`;
     }
-</script>
+  }
 
+  document.getElementById('main-result').innerHTML = `
+    <div class="svc-card">
+      <div class="svc-header">
+        <div><strong>Идеална цена</strong><br><small>базирана на марж 0.60</small></div>
+        <div class="svc-recommended">${ideal} €</div>
+      </div>
+      ${diag}
+    </div>`;
+}
+</script>
 </body>
 </html>
