@@ -16,95 +16,103 @@
   --shadow:0 4px 20px rgba(155,107,181,.10);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'DM Sans',sans-serif;background:var(--pink-pale);color:var(--text);line-height:1.5}
-.container{max-width:880px;margin:0 auto;padding:40px 20px 80px}
-header{text-align:center;margin-bottom:40px}
-h1{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300}
+body{font-family:'DM Sans',sans-serif;background:var(--pink-pale);color:var(--text);line-height:1.4}
+.container{max-width:880px;margin:0 auto;padding:20px 20px 80px}
+header{text-align:center;padding:30px 0}
+h1{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300}
 h1 em{font-style:italic;color:var(--purple)}
-.section{background:var(--white);border-radius:18px;border:1px solid var(--border);padding:25px;margin-bottom:20px;box-shadow:var(--shadow)}
-.section-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:1.5px solid var(--pink-light)}
-.section-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--purple-dark)}
-.grid-2{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:15px}
-.field{display:flex;flex-direction:column;gap:6px}
-label{font-size:11px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px}
+.section{background:var(--white);border-radius:18px;border:1px solid var(--border);padding:25px;margin-bottom:15px;box-shadow:var(--shadow)}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:10px;border-bottom:1.5px solid var(--pink-light)}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600}
+.grid-costs{display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+label{font-size:10px;font-weight:600;color:var(--text-light);text-transform:uppercase}
 .input-wrap{position:relative;display:flex;align-items:center}
-.input-wrap input{width:100%;padding:12px 40px 12px 12px;border:1.5px solid var(--border);border-radius:10px;background:var(--pink-pale);font-family:'DM Sans',sans-serif;font-size:15px}
-.unit{position:absolute;right:12px;font-size:12px;color:var(--text-light)}
-.calc-btn{width:100%;padding:20px;background:linear-gradient(135deg,var(--purple) 0%,var(--purple-dark) 100%);color:white;border:none;border-radius:14px;font-family:'Cormorant Garamond',serif;font-size:24px;cursor:pointer;margin:20px 0;transition:0.3s}
-.calc-btn:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(155,107,181,.3)}
-#results{display:none}
-.analysis-box{padding:25px;border-radius:14px;margin-top:10px;font-size:16px}
-.analysis-red{background:var(--red-light);color:var(--red-dark);border:1px solid var(--red)}
-.analysis-green{background:var(--green-light);color:var(--green-dark);border:1px solid var(--green)}
-.cta-box{background:#1A0A2E;color:white;padding:40px;border-radius:24px;text-align:center;margin-top:40px}
-.cta-box h2{font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:15px}
-.cta-btn{display:inline-block;padding:15px 40px;background:var(--pink);color:white;text-decoration:none;border-radius:50px;font-weight:500;margin-top:20px;transition:0.3s}
-.cta-btn:hover{background:white;color:var(--purple-dark)}
+.input-wrap input{width:100%;padding:10px;border:1.5px solid var(--border);border-radius:10px;background:var(--pink-pale);font-size:14px}
+.unit{position:absolute;right:10px;font-size:11px;color:var(--text-light)}
+.calc-btn{width:100%;padding:18px;background:linear-gradient(135deg,var(--purple) 0%,var(--purple-dark) 100%);color:white;border:none;border-radius:14px;font-family:'Cormorant Garamond',serif;font-size:22px;cursor:pointer;margin:20px 0}
+.svc-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:15px}
+.svc-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:15px;align-items:end}
+.diagnosis-tag{display:inline-block;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;margin-top:10px}
+.tag-red{background:var(--red-light);color:var(--red-dark)}
+.tag-green{background:var(--green-light);color:var(--green-dark)}
+.ideal-price-display{font-size:18px;color:var(--purple-dark);font-weight:600;margin-top:5px}
+.cta-box{background:#1A0A2E;color:white;padding:35px;border-radius:24px;text-align:center;margin-top:40px}
+.cta-btn{display:inline-block;padding:14px 35px;background:var(--pink);color:white;text-decoration:none;border-radius:50px;margin-top:20px}
 </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>Професионален <em>Бизнес Калкулатор</em></h1>
-    </header>
+    <header><h1>Професионален <em>Бизнес Калкулатор</em></h1></header>
 
     <div class="section">
-        <div class="section-header">
-            <div class="section-title">Стъпка 1: Месечни фиксирани разходи</div>
-        </div>
-        <div class="grid-2">
+        <div class="section-header"><div class="section-title">Стъпка 1: Месечни разходи & Заплата</div></div>
+        <div class="grid-costs">
             <div class="field"><label>Наем</label><div class="input-wrap"><input type="number" id="rent" value="200"><span class="unit">€</span></div></div>
             <div class="field"><label>Електричество</label><div class="input-wrap"><input type="number" id="elec" value="100"><span class="unit">€</span></div></div>
             <div class="field"><label>Вода</label><div class="input-wrap"><input type="number" id="water" value="5"><span class="unit">€</span></div></div>
             <div class="field"><label>Счетоводител</label><div class="input-wrap"><input type="number" id="acc" value="50"><span class="unit">€</span></div></div>
-            <div class="field"><label>ТВ/Интернет/Тел</label><div class="input-wrap"><input type="number" id="net" value="25"><span class="unit">€</span></div></div>
+            <div class="field"><label>Интернет/Тел</label><div class="input-wrap"><input type="number" id="net" value="25"><span class="unit">€</span></div></div>
             <div class="field"><label>СОТ</label><div class="input-wrap"><input type="number" id="sec" value="15"><span class="unit">€</span></div></div>
             <div class="field"><label>Осигуровки</label><div class="input-wrap"><input type="number" id="ins" value="200"><span class="unit">€</span></div></div>
             <div class="field"><label>Твоята Заплата</label><div class="input-wrap"><input type="number" id="salary" value="1500"><span class="unit">€</span></div></div>
-            <div class="field"><label>Работни часове месечно</label><div class="input-wrap"><input type="number" id="work_hours" value="176"><span class="unit">h</span></div></div>
+            <div class="field"><label>Часове работа/мес.</label><div class="input-wrap"><input type="number" id="work_hours" value="176"><span class="unit">h</span></div></div>
         </div>
     </div>
 
     <div class="section">
-        <div class="section-header">
-            <div class="section-title">Стъпка 2: Параметри на процедурата</div>
-        </div>
-        <div class="grid-2">
-            <div class="field"><label>Времетраене (в часове)</label><div class="input-wrap"><input type="number" id="duration" value="2" step="0.1"><span class="unit">h</span></div></div>
-            <div class="field"><label>Твоята текуща цена</label><div class="input-wrap"><input type="number" id="current_price" value="30"><span class="unit">€</span></div></div>
-        </div>
-        
-        <p style="margin-top:25px; font-weight:600; font-size:13px; color:var(--purple);">РАЗБИВКА НА МАТЕРИАЛИ ЗА 1 ПРОЦЕДУРА:</p>
-        <div class="grid-2" style="margin-top:10px;">
-            <div class="field"><label>База</label><div class="input-wrap"><input type="number" id="m_base" value="0.23" step="0.01"></div></div>
-            <div class="field"><label>Топ</label><div class="input-wrap"><input type="number" id="m_top" value="0.26" step="0.01"></div></div>
-            <div class="field"><label>Гел</label><div class="input-wrap"><input type="number" id="m_gel" value="0.40" step="0.01"></div></div>
-            <div class="field"><label>Цвят</label><div class="input-wrap"><input type="number" id="m_color" value="0.20" step="0.01"></div></div>
-            <div class="field"><label>Консумативи</label><div class="input-wrap"><input type="number" id="m_cons" value="0.12" step="0.01"></div></div>
-        </div>
+        <div class="section-header"><div class="section-title">Стъпка 2: Анализ на услугите</div></div>
+        <div id="services-container">
+            </div>
     </div>
 
-    <button class="calc-btn" onclick="calculate()">АНАЛИЗИРАЙ МОЯ БИЗНЕС</button>
-
-    <div id="results">
-        <div class="section">
-            <div class="section-header"><div class="section-title">Математически анализ</div></div>
-            <div id="analysis-output"></div>
-        </div>
-    </div>
+    <button class="calc-btn" onclick="calculate()">ИЗЧИСЛИ И АНАЛИЗИРАЙ</button>
 
     <div class="cta-box">
-        <h2>Искаш ли да научиш как да <em>ценообразуваш правилно?</em></h2>
-        <p>Този калкулатор показва цифрите, но в моето обучение ще те науча как да изградиш печеливша бизнес стратегия и да увеличиш доходите си.</p>
-        <a href="https://primadonna.bg/pricing-course" class="cta-btn">ЗАПИШИ СЕ В ОБУЧЕНИЕТО</a>
+        <h2>Това е само върхът на айсберга!</h2>
+        <p>Калкулаторът показва загубите, но в моето обучение ще те науча как да изградиш печеливша стратегия.</p>
+        <a href="https://primadonna.bg/pricing-course" class="cta-btn">КЪМ ОБУЧЕНИЕТО ПО ЦЕНООБРАЗУВАНЕ</a>
     </div>
 </div>
 
 <script>
+const services = [
+    { name: "Маникюр с гел лак", duration: 1.5, price: 30, m: 1.21 },
+    { name: "Сваляне и оформяне", duration: 0.5, price: 15, m: 0.40 },
+    { name: "Ноктопластика (Изграждане)", duration: 2.5, price: 60, m: 2.10 },
+    { name: "Корекция на ноктопластика", duration: 2.0, price: 45, m: 1.50 },
+    { name: "Педикюр с гел лак", duration: 1.5, price: 40, m: 1.30 }
+];
+
+function initServices() {
+    const container = document.getElementById('services-container');
+    services.forEach((s, i) => {
+        container.innerHTML += `
+            <div class="svc-card">
+                <div style="font-weight:600; margin-bottom:10px; color:var(--purple-dark)">${s.name}</div>
+                <div class="svc-grid">
+                    <div class="field">
+                        <label>Материали (разбивка)</label>
+                        <div class="input-wrap"><input type="number" id="m_${i}" value="${s.m}" step="0.01"><span class="unit">€</span></div>
+                    </div>
+                    <div class="field">
+                        <label>Време (h)</label>
+                        <div class="input-wrap"><input type="number" id="t_${i}" value="${s.duration}" step="0.1"></div>
+                    </div>
+                    <div class="field">
+                        <label>Текуща Цена</label>
+                        <div class="input-wrap"><input type="number" id="p_${i}" value="${s.price}"><span class="unit">€</span></div>
+                    </div>
+                </div>
+                <div id="diag_${i}"></div>
+            </div>
+        `;
+    });
+}
+
 function calculate() {
-    // Събиране на фиксирани разходи и заплата
-    const fixedCosts = 
+    const fixed = 
         Number(document.getElementById('rent').value) +
         Number(document.getElementById('elec').value) +
         Number(document.getElementById('water').value) +
@@ -114,53 +122,35 @@ function calculate() {
         Number(document.getElementById('ins').value);
     
     const salary = Number(document.getElementById('salary').value);
-    const totalOut = fixedCosts + salary;
     const workHours = Number(document.getElementById('work_hours').value);
-    
-    // Цена на минута труд
-    const costPerMinute = totalOut / (workHours * 60);
-    
-    // Данни за процедурата
-    const durationHours = Number(document.getElementById('duration').value);
-    const durationMinutes = durationHours * 60;
-    const currentPrice = Number(document.getElementById('current_price').value);
-    
-    // Материали
-    const materials = 
-        Number(document.getElementById('m_base').value) +
-        Number(document.getElementById('m_top').value) +
-        Number(document.getElementById('m_gel').value) +
-        Number(document.getElementById('m_color').value) +
-        Number(document.getElementById('m_cons').value);
-    
-    const timeCost = costPerMinute * durationMinutes;
-    
-    // ИДЕАЛНА ЦЕНА (МЕТОД НА МАРЖА 0.60)
-    // Осигурява 15% данъци, 15% амортизация/обучение и 10% чиста печалба
-    const idealPrice = (timeCost + materials) / 0.60;
-    
-    const resultsDiv = document.getElementById('results');
-    const output = document.getElementById('analysis-output');
-    resultsDiv.style.display = 'block';
-    
-    if (currentPrice < idealPrice) {
-        const diff = (idealPrice - currentPrice).toFixed(2);
-        output.innerHTML = `
-            <div class="analysis-box analysis-red">
-                <strong>Внимание!</strong> Вие подарявате на клиента <strong>${diff} €</strong> на всяка процедура.<br><br>
-                Според професионалния метод на маржа, вашата цена трябва да бъде минимум <strong>${idealPrice.toFixed(2)} €</strong>, за да покривате данъци, амортизация и да имате реална печалба.
-            </div>
-        `;
-    } else {
-        output.innerHTML = `
-            <div class="analysis-box analysis-green">
-                <strong>Поздравления!</strong> Твоята цена е математически издържана. Вашият бизнес е устойчив и печеливш, покривайки всички пера на професионалното ценообразуване.
-            </div>
-        `;
-    }
-    
-    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+    const costPerMin = (fixed + salary) / (workHours * 60);
+
+    services.forEach((s, i) => {
+        const m = Number(document.getElementById(`m_${i}`).value);
+        const t = Number(document.getElementById(`t_${i}`).value) * 60;
+        const currentP = Number(document.getElementById(`p_${i}`).value);
+        
+        const timeCost = costPerMin * t;
+        // ФОРМУЛА: (Разход време + Разход материали) / 0.60
+        const idealP = (timeCost + m) / 0.60;
+        const diagDiv = document.getElementById(`diag_${i}`);
+
+        if (currentP < idealP) {
+            const loss = (idealP - currentP).toFixed(2);
+            diagDiv.innerHTML = `
+                <div class="ideal-price-display">Идеална цена: ${idealP.toFixed(2)} €</div>
+                <div class="diagnosis-tag tag-red">Внимание! Губиш ${loss} € на процедура.</div>
+            `;
+        } else {
+            diagDiv.innerHTML = `
+                <div class="ideal-price-display">Идеална цена: ${idealP.toFixed(2)} €</div>
+                <div class="diagnosis-tag tag-green">Поздравления! Печеливша услуга.</div>
+            `;
+        }
+    });
 }
+
+window.onload = initServices;
 </script>
 
 </body>
