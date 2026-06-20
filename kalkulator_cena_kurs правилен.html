@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калкулатор за цена на курс — PrimaDonna</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple:#9B6BB5; --purple-l:#F3EDF8; --purple-d:#7B52AB;
+    --pink:#E8A0B4; --pink-d:#D4688A; --pink-bright:#E040FB;
+    --rose-gold:#C4956A;
+    --cream:#FDF5F7; --dark:#2D2D2D; --mid:#7A6080;
+    --border:#E8D5EE; --border-l:#F0E4F5;
+    --green:#2E7D32; --green-l:#E8F5E9;
+    --amber:#B8860B; --amber-l:#FFFBF0;
+    --red:#C62828; --red-l:#FFEBEE;
+    --online:#7B52AB; --online-l:#EDE7F6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh;}
+
+  .header{padding:18px 32px;display:flex;justify-content:center;align-items:center;border-bottom:1px solid var(--border);background:#fff;}
+  .logo{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--purple);letter-spacing:.06em;font-weight:600;}
+  .logo em{color:var(--pink-d);font-style:italic;}
+
+  .wrap{max-width:680px;margin:0 auto;padding:36px 20px 80px;}
+  h1{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;margin-bottom:6px;}
+  .sub{font-size:14px;color:var(--mid);font-weight:300;margin-bottom:28px;line-height:1.6;}
+
+  .tabs{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;}
+  .tab{flex:1;min-width:110px;padding:11px 8px;border:1.5px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;color:var(--mid);transition:all .2s;text-align:center;}
+  .tab:hover{border-color:var(--purple);color:var(--purple);}
+  .tab.active{border-color:var(--purple);background:var(--purple-l);color:var(--purple);font-weight:600;}
+  .tab.tab-online.active{border-color:var(--purple-d);background:var(--online-l);color:var(--purple-d);}
+  .tab b{display:block;font-size:13px;margin-bottom:1px;}
+  .tab span{font-size:10px;opacity:.7;}
+
+  .card{background:#fff;border-radius:16px;padding:26px;border:1px solid var(--border-l);margin-bottom:16px;box-shadow:0 2px 8px rgba(155,107,181,.06);}
+  .card-title{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:18px;}
+  .card-title.online{color:var(--purple-d);}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:480px){.grid2{grid-template-columns:1fr;}}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  @media(max-width:600px){.grid3{grid-template-columns:1fr;}}
+
+  .field label{display:block;font-size:13px;font-weight:500;margin-bottom:4px;}
+  .field .hint{font-size:11px;color:var(--mid);margin-bottom:5px;line-height:1.5;font-weight:300;}
+  .iw{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:9px;overflow:hidden;transition:border-color .2s;}
+  .iw:focus-within{border-color:var(--purple);}
+  .iw.online-focus:focus-within{border-color:var(--purple-d);}
+  .u{padding:0 11px;font-size:12px;color:var(--mid);background:var(--purple-l);white-space:nowrap;align-self:stretch;display:flex;align-items:center;border-right:1px solid var(--border);font-weight:500;}
+  .u.online{background:var(--online-l);color:var(--purple-d);}
+  .ur{border-right:none !important;border-left:1px solid var(--border) !important;}
+  .iw input{flex:1;padding:11px 12px;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:15px;color:var(--dark);background:#fff;}
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
+
+  .result{background:linear-gradient(145deg,#2D2D2D 0%,#1a1a2e 100%);border-radius:16px;padding:30px;margin-top:4px;border:1px solid rgba(155,107,181,.3);}
+  .r-lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:5px;font-weight:500;}
+  .r-price{font-family:'Cormorant Garamond',serif;font-size:58px;font-weight:600;line-height:1;margin-bottom:3px;background:linear-gradient(160deg,#E8A0B4,#9B6BB5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .r-sub{font-size:13px;color:rgba(255,255,255,.38);margin-bottom:22px;font-weight:300;}
+  .bdown{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+  @media(max-width:480px){.bdown{grid-template-columns:1fr;}}
+  .br{background:rgba(255,255,255,.07);border-radius:10px;padding:12px 14px;}
+  .br-l{font-size:11px;color:rgba(255,255,255,.38);margin-bottom:2px;font-weight:300;}
+  .br-v{font-size:15px;font-weight:500;color:#fff;}
+  .br-p{font-size:11px;color:rgba(232,160,180,.6);margin-left:3px;}
+  .divl{height:1px;background:rgba(255,255,255,.09);margin:14px 0;}
+  .signal{border-radius:10px;padding:13px 16px;display:flex;align-items:flex-start;gap:9px;}
+  .signal.g{background:var(--green-l);}
+  .signal.a{background:var(--amber-l);}
+  .signal.r{background:var(--red-l);}
+  .sdot{width:9px;height:9px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+  .signal.g .sdot{background:var(--green);}
+  .signal.a .sdot{background:var(--amber);}
+  .signal.r .sdot{background:var(--red);}
+  .stxt{font-size:13px;line-height:1.6;}
+  .signal.g .stxt{color:var(--green);}
+  .signal.a .stxt{color:var(--amber);}
+  .signal.r .stxt{color:var(--red);}
+
+  .note{background:var(--purple-l);border-left:3px solid var(--purple);border-radius:10px;padding:16px 18px;margin-top:14px;}
+  .note.online-note{background:var(--online-l);border-left-color:var(--purple-d);}
+  .note p{font-size:13px;line-height:1.7;color:var(--mid);font-weight:300;}
+  .note strong{color:var(--purple);font-weight:600;}
+  .note.online-note strong{color:var(--purple-d);}
+
+  .platform-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:5px;}
+  .plt{padding:6px 14px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;cursor:pointer;transition:all .2s;background:#fff;color:var(--mid);}
+  .plt:hover{border-color:var(--purple);color:var(--purple);}
+  .plt.active{border-color:var(--purple-d);background:var(--online-l);color:var(--purple-d);font-weight:600;}
+
+  .hours-badge{background:var(--online-l);border-radius:8px;padding:10px 14px;margin-top:14px;font-size:12px;color:var(--purple-d);font-weight:500;border:1px solid rgba(123,82,171,.15);}
+
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+
+<div class="header"><div class="logo">Prima<em>Donna</em> · Ценообразуване на курс</div></div>
+<div class="wrap">
+  <h1>Колко да струва твоят курс?</h1>
+  <div class="sub">Избери вида курс и въведи данните — ще изчислим минималната цена, която покрива всичко.</div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="setMode('short')"><b>Кратък</b><span>1–3 дни</span></div>
+    <div class="tab" onclick="setMode('medium')"><b>Среден</b><span>1–4 седмици</span></div>
+    <div class="tab" onclick="setMode('long')"><b>Базов</b><span>Няколко месеца</span></div>
+    <div class="tab tab-online" onclick="setMode('online')"><b>Онлайн</b><span>Живо или записан</span></div>
+  </div>
+
+  <!-- ГЛОБАЛЕН ИЗБОР НА ПЛАТФОРМА -->
+  <div class="card" id="platform-card" style="margin-bottom:16px;">
+    <div class="card-title" id="platform-card-title">Платформа за продажба на билети / курса</div>
+    <div class="hint" style="margin-bottom:10px;">Избери как продаваш местата — ще се включи комисионната автоматично</div>
+    <div class="platform-row" id="plt-row">
+      <div class="plt plt-online-only" onclick="setPlt(this,'zoom')">Zoom</div>
+      <div class="plt active" id="btn-umeya" onclick="setPlt(this,'bgplatform')">UMEYA</div>
+      <div class="plt plt-online-only" onclick="setPlt(this,'teachable')">Teachable</div>
+      <div class="plt" id="btn-manual" onclick="setPlt(this,'manual')">Ръчно</div>
+    </div>
+    <div id="plt-info" style="font-size:12px;color:var(--mid);margin-top:8px;font-weight:300;line-height:1.5;"></div>
+    <!-- Полето за платформена цена — само за онлайн режим -->
+    <div id="platform-price-wrap" style="display:none;margin-top:10px;">
+      <div class="iw online-focus">
+        <span class="u online">€</span>
+        <input type="number" id="o-platform" value="15" min="0" oninput="calc()">
+        <span class="u ur" id="platform-unit-label" style="font-size:11px;">за целия курс</span>
+      </div>
+    </div>
+    <!-- Поле за ръчна комисионна — само за Zoom/Teachable/Manual -->
+    <div id="commission-wrap" style="display:none;margin-top:10px;">
+      <label style="font-size:13px;font-weight:500;display:block;margin-bottom:4px;">Комисионна на платформата</label>
+      <div class="iw online-focus"><input type="number" id="o-commission" value="0" min="0" max="30" oninput="calc()"><span class="u ur">%</span></div>
+    </div>
+  </div>
+
+  <!-- ПРИСЪСТВЕНИ БЛОКОВЕ -->
+  <div id="section-present">
+    <div class="card">
+      <div class="card-title">1. Структура на курса</div>
+      <div class="grid2">
+        <div class="field">
+          <label>Брой курсисти в групата</label>
+          <div class="iw"><span class="u">бр.</span><input type="number" id="students" value="4" min="1" oninput="calc()"></div>
+        </div>
+        <div class="field" id="f-days">
+          <label>Брой дни</label>
+          <div class="iw"><span class="u">дни</span><input type="number" id="days" value="2" min="1" max="3" oninput="calc()"></div>
+        </div>
+        <div class="field hidden" id="f-weeks">
+          <label>Брой седмици</label>
+          <div class="iw"><span class="u">седм.</span><input type="number" id="weeks" value="2" min="1" max="4" oninput="calc()"></div>
+        </div>
+        <div class="field hidden" id="f-months">
+          <label>Брой месеца</label>
+          <div class="iw"><span class="u">мес.</span><input type="number" id="months" value="3" min="1" oninput="calc()"></div>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:14px;">
+        <div class="field">
+          <label id="lbl-hours">Часове обучение на ден</label>
+          <div class="iw"><span class="u">ч.</span><input type="number" id="hoursPerUnit" value="6" min="1" max="10" oninput="calc()"></div>
+        </div>
+        <div class="field">
+          <label>Часове подготовка (общо)</label>
+          <div class="hint">Разработка на материали — еднократно</div>
+          <div class="iw"><span class="u">ч.</span><input type="number" id="prepH" value="8" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:14px;display:none;" id="f-dpu">
+        <div class="field">
+          <label id="lbl-dpu">Учебни дни на седмица</label>
+          <div class="hint">Колко дни се срещате всяка седмица/месец</div>
+          <div class="iw"><span class="u">дни</span><input type="number" id="dpu" value="2" min="1" max="7" oninput="calc()"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">2. Разходи за провеждане</div>
+      <div class="grid2">
+        <div class="field">
+          <label id="lbl-rent">Наем на пространство</label>
+          <div class="hint" id="hint-rent">За целия курс</div>
+          <div class="iw"><input type="number" id="rent" value="80" min="0" oninput="calc()"><span class="u ur">€</span></div>
+        </div>
+        <div class="field">
+          <label>Материали и консумативи</label>
+          <div class="hint">На курсист — за целия курс</div>
+          <div class="iw"><input type="number" id="materials" value="30" min="0" oninput="calc()"><span class="u ur">€/курс.</span></div>
+        </div>
+        <div class="field">
+          <label>Маркетинг и реклама</label>
+          <div class="hint">За тази група — еднократно</div>
+          <div class="iw"><input type="number" id="marketing" value="30" min="0" oninput="calc()"><span class="u ur">€</span></div>
+        </div>
+        <div class="field">
+          <label>Други разходи</label>
+          <div class="hint">Сертификати, принтиране, кафе</div>
+          <div class="iw"><input type="number" id="other" value="15" min="0" oninput="calc()"><span class="u ur">€</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">3. Заплата, данък и печалба</div>
+      <div class="grid3">
+        <div class="field">
+          <label>Часова ставка на преподавателя</label>
+          <div class="hint">Твоята заплата — за обучение И подготовка</div>
+          <div class="iw"><input type="number" id="rate" value="18" min="1" oninput="calc()"><span class="u ur">€/час</span></div>
+        </div>
+        <div class="field">
+          <label>Данък</label>
+          <div class="hint">Плосък данък 10% или твоя реален процент</div>
+          <div class="iw"><input type="number" id="tax" value="10" min="0" max="50" oninput="calc()"><span class="u ur">%</span></div>
+        </div>
+        <div class="field">
+          <label>Желана фирмена печалба</label>
+          <div class="hint">Добавя се преди данъка — за инвестиции и развитие</div>
+          <div class="iw"><input type="number" id="profit" value="0" min="0" max="100" oninput="calc()"><span class="u ur">%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ОНЛАЙН БЛОКОВЕ -->
+  <div id="section-online" style="display:none;">
+    <div class="card">
+      <div class="card-title online">1. Структура на онлайн курса</div>
+      <div class="grid2">
+        <div class="field">
+          <label>Брой курсисти</label>
+          <div class="iw online-focus"><span class="u online">бр.</span><input type="number" id="o-students" value="10" min="1" oninput="calc()"></div>
+        </div>
+        <div class="field">
+          <label>Часове на живо</label>
+          <div class="hint">Zoom, Teams — реално време, отнема повече</div>
+          <div class="iw online-focus"><span class="u online">ч.</span><input type="number" id="o-hours-live" value="10" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field">
+          <label>Часове записан материал</label>
+          <div class="hint">Видеа, гледани по всяко време</div>
+          <div class="iw online-focus"><span class="u online">ч.</span><input type="number" id="o-hours-rec" value="5" min="0" oninput="calc()"></div>
+        </div>
+        <div class="field">
+          <label>Часове подготовка (общо)</label>
+          <div class="hint">Разработка, планиране, монтаж — еднократно</div>
+          <div class="iw online-focus"><span class="u online">ч.</span><input type="number" id="o-prep" value="10" min="0" oninput="calc()"></div>
+        </div>
+      </div>
+      <div class="hours-badge">Общо часове труд: <strong id="o-total-hours">0 ч.</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title online">2. Разходи за онлайн курса</div>
+      <div class="grid2">
+        <div class="field">
+          <label>Обучение на живо — разходи</label>
+          <div class="hint">Оборудване, осветление, интернет за стрийм</div>
+          <div class="iw online-focus"><input type="number" id="o-video-live" value="20" min="0" oninput="calc()"><span class="u ur">€</span></div>
+        </div>
+        <div class="field">
+          <label>Записани видеа — разходи</label>
+          <div class="hint">Монтаж, хостинг, съхранение на записите</div>
+          <div class="iw online-focus"><input type="number" id="o-video-rec" value="30" min="0" oninput="calc()"><span class="u ur">€</span></div>
+        </div>
+        <div class="field">
+          <label>Маркетинг и реклама</label>
+          <div class="hint">За тази група — еднократно</div>
+          <div class="iw online-focus"><input type="number" id="o-marketing" value="40" min="0" oninput="calc()"><span class="u ur">€</span></div>
+        </div>
+        <div class="field">
+          <label>Други технически разходи</label>
+          <div class="hint">Домейн, имейл инструменти и др.</div>
+          <div class="iw online-focus"><input type="number" id="o-other" value="10" min="0" oninput="calc()"><span class="u ur">€</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title online">3. Заплата, данък и печалба</div>
+      <div class="grid3">
+        <div class="field">
+          <label>Часова ставка на преподавателя</label>
+          <div class="hint">За обучение И подготовка</div>
+          <div class="iw online-focus"><input type="number" id="o-rate" value="18" min="1" oninput="calc()"><span class="u ur">€/час</span></div>
+        </div>
+        <div class="field">
+          <label>Данък</label>
+          <div class="hint">10% или твоя реален процент</div>
+          <div class="iw online-focus"><input type="number" id="o-tax" value="10" min="0" max="50" oninput="calc()"><span class="u ur">%</span></div>
+        </div>
+        <div class="field">
+          <label>Желана фирмена печалба</label>
+          <div class="hint">Добавя се преди данъка — за инвестиции и развитие</div>
+          <div class="iw online-focus"><input type="number" id="o-profit" value="0" min="0" max="100" oninput="calc()"><span class="u ur">%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- РЕЗУЛТАТ -->
+  <div class="result">
+    <div class="r-lbl">Минимална цена на курсист</div>
+    <div class="r-price" id="rPrice">€0</div>
+    <div class="r-sub" id="rSub">за целия курс</div>
+    <div class="bdown">
+      <div class="br"><div class="br-l" id="bLaborLbl">Заплата на преподавателя</div><div class="br-v" id="bLabor">€0</div></div>
+      <div class="br"><div class="br-l" id="bCostsLbl">Разходи на курсист</div><div class="br-v" id="bCosts">€0</div></div>
+      <div class="br"><div class="br-l">Данък (прибл.)</div><div class="br-v" id="bTax">€0</div></div>
+      <div class="br"><div class="br-l" id="bProfitLbl" style="display:none;">Фирмена печалба</div><div class="br-v" id="bProfit" style="display:none;">€0</div></div>
+      <div class="br"><div class="br-l">Общо за групата</div><div class="br-v" id="bTotal">€0</div></div>
+    </div>
+    <div class="divl"></div>
+    <div id="signal"></div>
+  </div>
+
+  <div class="note" id="bottomNote">
+    <p><strong>Това е минималната цена.</strong> Тя покрива заплатата ти, всички разходи и данъка. Ако искаш да реинвестираш в развитието си — добави 10–20% отгоре. Цената под тази граница означава, че работиш на загуба.</p>
+  </div>
+</div>
+
+<script>
+let mode = 'short';
+let pltMode = 'zoom';
+
+const pltData = {
+  zoom:       { price:15,  perMonth:true,  commission:0,           info:'Zoom Pro — ~15 €/месец. Умножава се по продължителността на курса. Без комисионна.' },
+  bgplatform: { price:0,   perMonth:false, commission:'скалираща', info:'Платформата UMEYA поема продажбите, билетите и автоматичните фактури. Скалираща комисионна от 15% до 8% спрямо крайната цена на курса. Изчислява се автоматично.' },
+  teachable:  { price:39,  perMonth:true,  commission:0,           info:'Teachable Basic — ~39 €/месец. Умножава се по продължителността на курса. Без комисионна.' },
+  manual:     { price:0,   perMonth:false, commission:0,           info:'Организираш и промотираш курса изцяло самостоятелно. Нямаш комисионна към платформа (0%), но поемаш ръчно записванията и администрацията.' }
+};
+
+function getPlatformMonths() {
+  const live = parseFloat(document.getElementById('o-hours-live').value) || 0;
+  const rec  = parseFloat(document.getElementById('o-hours-rec').value)  || 0;
+  const total = live + rec;
+  if (total <= 10) return 1;
+  if (total <= 30) return 2;
+  return 3;
+}
+
+function setPlt(el, key) {
+  pltMode = key;
+  document.querySelectorAll('.plt').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  const d = pltData[key];
+  document.getElementById('plt-info').textContent = d.info;
+
+  // Полето за цена на платформата — само в онлайн режим
+  const priceWrap = document.getElementById('platform-price-wrap');
+  const isOnline  = mode === 'online';
+  if (isOnline) {
+    priceWrap.style.display = '';
+    const months = getPlatformMonths();
+    const ul = document.getElementById('platform-unit-label');
+    document.getElementById('o-platform').value = d.price;
+    ul.textContent = d.perMonth ? `€/мес. × ${months} мес.` : 'за целия курс';
+  } else {
+    priceWrap.style.display = 'none';
+  }
+
+  // Комисионна: bgplatform е скалираща — скриваме ръчното поле
+  const commWrap = document.getElementById('commission-wrap');
+  if (key === 'bgplatform') {
+    commWrap.style.display = 'none';
+    document.getElementById('o-commission').value = 0;
+  } else {
+    commWrap.style.display = isOnline || key === 'manual' ? '' : 'none';
+    document.getElementById('o-commission').value = typeof d.commission === 'number' ? d.commission : 0;
+  }
+  calc();
+}
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.tab').forEach((t,i) =>
+    t.classList.toggle('active', ['short','medium','long','online'][i] === m)
+  );
+  const isOnline = m === 'online';
+  document.getElementById('section-present').style.display = isOnline ? 'none' : 'block';
+  document.getElementById('section-online').style.display  = isOnline ? 'block' : 'none';
+
+  // Филтрираме бутоните: при присъствен — само UMEYA и Ръчно
+  document.querySelectorAll('.plt-online-only').forEach(b => {
+    b.style.display = isOnline ? '' : 'none';
+  });
+
+  // Текстове на бутоните според режима
+  const btnUmeya  = document.getElementById('btn-umeya');
+  const btnManual = document.getElementById('btn-manual');
+  if (!isOnline) {
+    btnUmeya.textContent  = 'Качвам го в UMEYA';
+    btnManual.textContent = 'Ще си го промотирам сам';
+  } else {
+    btnUmeya.textContent  = 'UMEYA';
+    btnManual.textContent = 'Ръчно';
+  }
+  // Ако текущата платформа не е налична в присъствен режим — превключи на UMEYA
+  if (!isOnline && (pltMode === 'zoom' || pltMode === 'teachable')) {
+    const umeyaBtn = document.querySelector('.plt[onclick*="bgplatform"]');
+    setPlt(umeyaBtn, 'bgplatform');
+    return; // setPlt вика calc()
+  }
+
+  // Показваме/скриваме цената на платформата
+  document.getElementById('platform-price-wrap').style.display = isOnline ? '' : 'none';
+
+  if (!isOnline) {
+    document.getElementById('f-days').classList.toggle('hidden', m !== 'short');
+    document.getElementById('f-weeks').classList.toggle('hidden', m !== 'medium');
+    document.getElementById('f-months').classList.toggle('hidden', m !== 'long');
+    document.getElementById('f-dpu').style.display = m === 'short' ? 'none' : 'grid';
+    if (m === 'short') {
+      document.getElementById('lbl-hours').textContent  = 'Часове обучение на ден';
+      document.getElementById('hint-rent').textContent  = 'За целия курс — еднократно';
+    } else if (m === 'medium') {
+      document.getElementById('lbl-hours').textContent  = 'Часове обучение на ден';
+      document.getElementById('lbl-dpu').textContent    = 'Учебни дни на седмица';
+      document.getElementById('hint-rent').textContent  = 'На седмица — умножава се по броя седмици';
+    } else {
+      document.getElementById('lbl-hours').textContent  = 'Часове обучение на ден';
+      document.getElementById('lbl-dpu').textContent    = 'Учебни дни на месец';
+      document.getElementById('hint-rent').textContent  = 'На месец — умножава се по броя месеци';
+    }
+  }
+  document.getElementById('bottomNote').className = isOnline ? 'note online-note' : 'note';
+  calc();
+}
+
+function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function eu(n) { return '€' + Math.round(n).toLocaleString('de-DE'); }
+function pp(part, total) {
+  if (!total) return '';
+  return '<span class="br-p">≈' + Math.round(part/total*100) + '%</span>';
+}
+
+function calc() { if (mode === 'online') calcOnline(); else calcPresent(); }
+
+function calcPresent() {
+  const students = Math.max(1, v('students'));
+  const hoursPerUnit = v('hoursPerUnit');
+  const prepH = v('prepH');
+  const rent = v('rent');
+  const materialsPerPerson = v('materials');
+  const marketing = v('marketing');
+  const other = v('other');
+  const rate = v('rate');
+  const taxPct = v('tax') / 100;
+  const profitPct = v('profit') / 100;
+  let totalTeachHours=0, rentMultiplier=1, subLabel='';
+  if (mode==='short') {
+    const days = Math.max(1, v('days'));
+    totalTeachHours = days * hoursPerUnit; rentMultiplier=1;
+    subLabel = `за ${days} ${days===1?'ден':'дни'}`;
+  } else if (mode==='medium') {
+    const weeks=Math.max(1,v('weeks')), dpu=Math.max(1,v('dpu'));
+    totalTeachHours = weeks*dpu*hoursPerUnit; rentMultiplier=weeks;
+    subLabel = `за ${weeks} седм.`;
+  } else {
+    const months=Math.max(1,v('months')), dpu=Math.max(1,v('dpu'));
+    totalTeachHours = months*dpu*hoursPerUnit; rentMultiplier=months;
+    subLabel = `за ${months} месеца`;
+  }
+  const laborTotal   = (totalTeachHours + prepH) * rate;
+  const rentTotal    = rent * rentMultiplier;
+  const materialsTotal = materialsPerPerson * students;
+  const costsTotal   = rentTotal + materialsTotal + marketing + other;
+  const subtotalBase = laborTotal + costsTotal;
+  const profitAmt    = subtotalBase * profitPct;
+  const subtotal     = subtotalBase + profitAmt;
+  const taxAmt       = subtotal * taxPct;
+  const grandTotal   = subtotal + taxAmt;
+  const perStudentBase = grandTotal / students;
+  const costsPerStudent = costsTotal / students;
+
+  // UMEYA скалираща комисионна (и при присъствен курс)
+  let dynamicCommissionPct = 0;
+  if (pltMode === 'bgplatform') {
+    if      (perStudentBase / (1 - 0.15) <= 300)  dynamicCommissionPct = 0.15;
+    else if (perStudentBase / (1 - 0.12) <= 500)  dynamicCommissionPct = 0.12;
+    else if (perStudentBase / (1 - 0.10) <= 1000) dynamicCommissionPct = 0.10;
+    else                                           dynamicCommissionPct = 0.08;
+  } else {
+    dynamicCommissionPct = v('o-commission') / 100;
+  }
+  const commissionPct = dynamicCommissionPct;
+  const perStudent    = commissionPct > 0 ? perStudentBase / (1 - commissionPct) : perStudentBase;
+  const commAmt       = perStudent - perStudentBase;
+
+  document.getElementById('rPrice').textContent = eu(perStudent);
+  if (mode==='medium') {
+    const wk=Math.max(1,v('weeks'));
+    document.getElementById('rSub').textContent = `${subLabel} · ${eu(perStudent/wk)}/седм. на курсист`;
+  } else if (mode==='long') {
+    const mo=Math.max(1,v('months'));
+    document.getElementById('rSub').textContent = `${subLabel} · ${eu(perStudent/mo)}/месец на курсист`;
+  } else {
+    document.getElementById('rSub').textContent = subLabel;
+  }
+  document.getElementById('bLaborLbl').textContent = 'Заплата на преподавателя';
+  const commPctDisplay = Math.round(commissionPct * 100);
+  document.getElementById('bCostsLbl').textContent = commissionPct > 0
+    ? `Разходи + UMEYA ${commPctDisplay}%`
+    : 'Разходи на курсист';
+  const costsAndComm = costsPerStudent + commAmt;
+  document.getElementById('bLabor').innerHTML  = eu(laborTotal/students) + ' ' + pp(laborTotal/students, perStudent);
+  document.getElementById('bCosts').innerHTML  = eu(costsAndComm) + ' ' + pp(costsAndComm, perStudent);
+  document.getElementById('bTax').innerHTML    = eu(taxAmt/students) + ' ' + pp(taxAmt/students, perStudent);
+  // Profit row
+  const profitEl = document.getElementById('bProfit');
+  const profitLblEl = document.getElementById('bProfitLbl');
+  if (profitPct > 0) {
+    profitEl.style.display = ''; profitLblEl.style.display = '';
+    profitEl.innerHTML = eu(profitAmt/students) + ' ' + pp(profitAmt/students, perStudent);
+  } else {
+    profitEl.style.display = 'none'; profitLblEl.style.display = 'none';
+  }
+  document.getElementById('bTotal').innerHTML  = eu(perStudent * students);
+  const refs = {short:80, medium:180, long:350};
+  setSignal(perStudent, refs[mode]);
+}
+
+function calcOnline() {
+  const students     = Math.max(1, v('o-students'));
+  const hoursLive    = v('o-hours-live');
+  const hoursRec     = v('o-hours-rec');
+  const hours        = hoursLive + hoursRec;
+  const prep         = v('o-prep');
+  const rate         = v('o-rate');
+  const taxPct       = v('o-tax') / 100;
+  const totalHoursEl = document.getElementById('o-total-hours');
+  if (totalHoursEl) totalHoursEl.textContent = (hours + prep) + ' ч.';
+
+  // Платформа: monthly × месеци FIXED — умножава правилно
+  const months        = getPlatformMonths();
+  const platformBase  = v('o-platform');
+  const d             = pltData[pltMode];
+  const platformTotal = d.perMonth ? platformBase * months : platformBase;
+  const ul = document.getElementById('platform-unit-label');
+  if (d.perMonth) ul.textContent = `€/мес. × ${months} мес.`;
+  else ul.textContent = 'за целия курс';
+
+  const video        = v('o-video-live') + v('o-video-rec');
+  const marketing    = v('o-marketing');
+  const otherCosts   = v('o-other');
+  const profitPct    = v('o-profit') / 100;
+  const laborTotal   = (hours + prep) * rate;
+  const costsTotal   = platformTotal + video + marketing + otherCosts;
+  const subtotalBase = laborTotal + costsTotal;
+  const profitAmt    = subtotalBase * profitPct;
+  const subtotalBC   = subtotalBase + profitAmt;
+  const taxAmt       = subtotalBC * taxPct;
+  const subtotal     = subtotalBC + taxAmt;
+  const perStudentBase = subtotal / students;
+
+  // Комисионна: БГ Платформа = скалираща, останалите = ръчно поле
+  let dynamicCommissionPct = 0;
+  if (pltMode === 'bgplatform') {
+    if      (perStudentBase / (1 - 0.15) <= 300)  dynamicCommissionPct = 0.15;
+    else if (perStudentBase / (1 - 0.12) <= 500)  dynamicCommissionPct = 0.12;
+    else if (perStudentBase / (1 - 0.10) <= 1000) dynamicCommissionPct = 0.10;
+    else                                           dynamicCommissionPct = 0.08;
+  } else {
+    dynamicCommissionPct = v('o-commission') / 100;
+  }
+  const commissionPct = dynamicCommissionPct;
+  const perStudent   = commissionPct > 0 ? perStudentBase / (1 - commissionPct) : perStudentBase;
+  const costsPerStudent = costsTotal / students;
+  // Комисионна тежест на курсист
+  const commAmt      = perStudent - perStudentBase;
+  document.getElementById('rPrice').textContent = eu(perStudent);
+  document.getElementById('rSub').textContent   = 'цена на курсист';
+  document.getElementById('bLaborLbl').textContent = 'Заплата на преподавателя';
+  const commPctDisplay = Math.round(commissionPct * 100);
+  document.getElementById('bCostsLbl').textContent = commissionPct > 0
+    ? (pltMode === 'bgplatform' ? `Разходи + UMEYA ${commPctDisplay}%` : 'Разходи + комисионна/курс.')
+    : 'Платформа + разходи/курсист';
+  document.getElementById('bLabor').innerHTML  = eu(laborTotal/students) + ' ' + pp(laborTotal/students, perStudent);
+  // Costs box: разходи + комисионна за честна математика
+  const costsAndComm = costsPerStudent + commAmt;
+  document.getElementById('bCosts').innerHTML  = eu(costsAndComm) + ' ' + pp(costsAndComm, perStudent);
+  document.getElementById('bTax').innerHTML    = eu(taxAmt/students) + ' ' + pp(taxAmt/students, perStudent);
+  // Profit row
+  const profitEl = document.getElementById('bProfit');
+  const profitLblEl = document.getElementById('bProfitLbl');
+  if (profitPct > 0) {
+    profitEl.style.display = ''; profitLblEl.style.display = '';
+    profitEl.innerHTML = eu(profitAmt/students) + ' ' + pp(profitAmt/students, perStudent);
+  } else {
+    profitEl.style.display = 'none'; profitLblEl.style.display = 'none';
+  }
+  // FIX: bTotal = реалната сума, която групата плаща
+  document.getElementById('bTotal').innerHTML  = eu(perStudent * students);
+  // Динамична референция според часовете — FIXED (не е фиксирано на 60)
+  const dynamicRef = Math.min(300, Math.max(40, Math.round((hours + prep) * 2)));
+  setSignal(perStudent, dynamicRef);
+}
+
+function setSignal(perStudent, ref) {
+  let cls, msg;
+  if (perStudent < ref * 0.75) {
+    cls='r'; msg='<strong>Цената е под разходите.</strong> При тези данни работиш на загуба. Провери часовата ставка, намали групата или намали разходите.';
+  } else if (perStudent < ref) {
+    cls='a'; msg='<strong>Цената покрива разходите, но без буфер.</strong> Всяка неочаквана промяна те вкарва на загуба. Помисли дали да добавиш 10–15% отгоре.';
+  } else {
+    cls='g'; msg='<strong>Цената покрива всичко и е балансирана.</strong> Можеш да работиш с тази цена.';
+  }
+  document.getElementById('signal').innerHTML =
+    `<div class="signal ${cls}"><div class="sdot"></div><div class="stxt">${msg}</div></div>`;
+}
+
+// Init
+document.getElementById('f-dpu').style.display = 'none';
+document.getElementById('platform-price-wrap').style.display = 'none';
+document.querySelectorAll('.plt-online-only').forEach(b => b.style.display = 'none');
+const initBtn = document.querySelector('.plt.active');
+setPlt(initBtn, 'bgplatform');
+calc();
+</script>
+</body>
+</html>
